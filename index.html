@@ -121,7 +121,7 @@ function record(q, n, fromWrong) {
 function home() {
   view = 'home'; sess = null; stopTimer();
   const tabs = [['plan', '📅 每日'], ['practice', '練習'], ['mock', '模擬考'], ['wrong', '錯題本'], ['stats', '紀錄']];
-  let h = `<header><div class="hrow"><h1>理財規劃人員 互動題庫</h1><span class="links"><a href="note.html?v=1790699260">📖 筆記</a><a href="answers.html?v=1790699260">✅ 解析</a><a href="numbers.html?v=1790699260">🔢 數字</a><a href="predict.html?v=1790699260">🎯 預測</a></span></div><nav>${tabs.map(([k, v]) =>
+  let h = `<header><div class="hrow"><h1>理財規劃人員 互動題庫</h1><span class="links"><a href="note.html?v=1790700245">📖 筆記</a><a href="answers.html?v=1790700245">✅ 解析</a><a href="numbers.html?v=1790700245">🔢 數字</a><a href="predict.html?v=1790700245">🎯 預測</a></span></div><nav>${tabs.map(([k, v]) =>
     `<button class="tab ${tab === k ? 'on' : ''}" data-act="tab" data-arg="${k}">${v}</button>`).join('')}</nav></header><main>`;
   if (!['plan', 'practice', 'mock', 'wrong', 'stats'].includes(tab)) tab = 'plan';
   h += {plan: planTab, practice: practiceTab, mock: mockTab, wrong: wrongTab, stats: statsTab}[tab]();
@@ -155,7 +155,7 @@ const PLAN = [
   ['10/10', '六・國慶', [R('plan', 7, 35), H('plan', 7), M('48實務', 120), W('plan', 30)]],
   ['10/11', '日', [M('predAplan', 120), M('predBtool', 80), V('plan')]],
   ['10/12', '一', [M('predBplan', 120), W('all', 60)]],
-  ['10/13', '二', [M('predCtool', 80), C('筆記「第 4 部分」背誦總表＋「第 5 部分」公式卡', 60, '第 4 部分'), W('all', 40), M('predCplan', 120, 1)]],
+  ['10/13', '二', [M('predCtool', 80), C('筆記「第 4 部分」背誦總表＋「第 5 部分」公式卡', 60, ['第 4 部分', '第 5 部分']), W('all', 40), M('predCplan', 120, 1)]],
   ['10/14', '三・考試', [C('出門前看「第 5 部分」公式卡', 15, '第 5 部分'), C('准考證、身分證、文具帶齊', 5), C('第一科考完休息時看「第 4 部分」背誦總表的實務部分', 15, '第 4 部分')]]
 ];
 let planDay = null;
@@ -163,7 +163,10 @@ const chName = (s, c) => DATA.blocks[s][c][0];
 const hiSet = (s, ch, star) => DATA.hot.concat(DATA.old).filter(q => q.s === s && (!ch || q.ch === ch) && q.star >= star && q.ans != null);
 const qMin = n => Math.max(5, Math.round(n * 60 / RATE));
 const dayTime = di => { const [m, d] = PLAN[di][0].split('/'); return new Date(YEAR, m - 1, d).getTime(); };
-function noteHref(prefix) { const k = Object.keys(NOTE).find(t => t.startsWith(prefix)); return `note.html?v=1790699260${k ? '#' + NOTE[k] : ''}`; }
+function noteHref(prefix) {
+  const ids = [].concat(prefix).map(p => Object.keys(NOTE).find(t => t.startsWith(p))).filter(Boolean).map(k => NOTE[k]);
+  return `note.html?v=1790700245${ids.length ? '&only=' + encodeURIComponent(ids.join(',')) : ''}`;
+}
 function todayIdx() { const t = Date.now(); let i = -1; PLAN.forEach((p, k) => { if (t >= dayTime(k)) i = k; }); return i; }
 
 function taskList(t, di) {
