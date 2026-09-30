@@ -121,7 +121,7 @@ function record(q, n, fromWrong) {
 function home() {
   view = 'home'; sess = null; stopTimer();
   const tabs = [['plan', '📅 每日'], ['practice', '練習'], ['mock', '模擬考'], ['wrong', '錯題本'], ['stats', '紀錄']];
-  let h = `<header><div class="hrow"><h1>理財規劃人員 互動題庫</h1><span class="links"><a href="note.html?v=1790800676">📖 筆記</a><a href="answers.html?v=1790800676">✅ 解析</a><a href="numbers.html?v=1790800676">🔢 數字</a><a href="predict.html?v=1790800676">🎯 預測</a></span></div><nav>${tabs.map(([k, v]) =>
+  let h = `<header><div class="hrow"><h1>理財規劃人員 互動題庫</h1><span class="links"><a href="note.html?v=1790801001">📖 筆記</a><a href="answers.html?v=1790801001">✅ 解析</a><a href="numbers.html?v=1790801001">🔢 數字</a><a href="predict.html?v=1790801001">🎯 預測</a></span></div><nav>${tabs.map(([k, v]) =>
     `<button class="tab ${tab === k ? 'on' : ''}" data-act="tab" data-arg="${k}">${v}</button>`).join('')}</nav></header><main>`;
   if (!['plan', 'practice', 'mock', 'wrong', 'stats'].includes(tab)) tab = 'plan';
   h += (tab !== 'mock' ? sessCard() : '') + {plan: planTab, practice: practiceTab, mock: mockTab, wrong: wrongTab, stats: statsTab}[tab]();
@@ -163,16 +163,18 @@ const chName = (s, c) => DATA.blocks[s][c][0];
 const hiSet = (s, ch, star) => DATA.hot.concat(DATA.old).filter(q => q.s === s && (!ch || q.ch === ch) && q.star >= star && q.ans != null);
 const qMin = n => Math.max(5, Math.round(n * 60 / RATE));
 const dayTime = di => { const [m, d] = PLAN[di][0].split('/'); return new Date(YEAR, m - 1, d).getTime(); };
+const dayOpen = di => di <= todayIdx() || !!(S.plan.open || {})[di];
+const dayStart = di => Math.min(dayTime(di), (S.plan.open || {})[di] || Infinity);
 function noteHref(prefix) {
   const ids = [].concat(prefix).map(p => Object.keys(NOTE).find(t => t.startsWith(p))).filter(Boolean).map(k => NOTE[k]);
-  return `note.html?v=1790800676${ids.length ? '&only=' + encodeURIComponent(ids.join(',')) : ''}`;
+  return `note.html?v=1790801001${ids.length ? '&only=' + encodeURIComponent(ids.join(',')) : ''}`;
 }
 function todayIdx() { const t = Date.now(); let i = -1; PLAN.forEach((p, k) => { if (t >= dayTime(k)) i = k; }); return i; }
 
 function taskList(t, di) {
   if (t.k === 'wrong') { const base = S.plan.snap[`${di}-${t.s}`] || []; return base.filter(id => S.wrong[id]).map(id => ITEMS[id]); }
   const L = t.k === 'hi' ? hiSet(t.s, chName(t.s, t.c), 1) : hiSet(t.s, '', 2);
-  const t0 = dayTime(di), fresh = q => S.rec[q.id] && (t.k === 'hi' || (S.rec[q.id].t || 0) >= t0);
+  const t0 = dayStart(di), fresh = q => S.rec[q.id] && (t.k === 'hi' || (S.rec[q.id].t || 0) >= t0);
   return L.filter(q => !fresh(q)).concat(L.filter(fresh));
 }
 
@@ -185,7 +187,7 @@ function taskInfo(t, di, ti) {
   }
   if (t.k === 'hi' || t.k === 'rev') {
     const L = t.k === 'hi' ? hiSet(t.s, chName(t.s, t.c), 1) : hiSet(t.s, '', 2);
-    const t0 = dayTime(di), done = L.filter(q => S.rec[q.id] && (t.k === 'hi' || (S.rec[q.id].t || 0) >= t0));
+    const t0 = dayStart(di), done = L.filter(q => S.rec[q.id] && (t.k === 'hi' || (S.rec[q.id].t || 0) >= t0));
     const right = done.filter(q => S.rec[q.id].last).length, min = qMin(L.length);
     return {min, pct: done.length / L.length, n: done.length, right, start: 1,
       title: t.k === 'hi' ? `📝 高頻題「${chName(t.s, t.c)}」全部做一遍` : `🔁 ${SHORT[t.s]} ⭐⭐ 以上重做一遍（這天做的才算）`,
@@ -197,7 +199,7 @@ function taskInfo(t, di, ti) {
       sub: `限時 ${p.min} 分鐘＋檢討錯題 · 約 ${t.min} 分鐘${m ? ` · 最高 ${m.best} 分` : ''}`};
   }
   const sk = `${di}-${t.s}`, name = t.s === 'all' ? '全部' : SHORT[t.s];
-  if (!S.plan.snap[sk] && di <= todayIdx()) {
+  if (!S.plan.snap[sk] && dayOpen(di)) {
     S.plan.snap[sk] = wrongIds(t.s).filter(id => ITEMS[id].ans != null);
     (S.plan.snapT = S.plan.snapT || {})[sk] = Date.now(); save();
   }
@@ -210,13 +212,12 @@ function taskInfo(t, di, ti) {
 }
 
 function dayInfo(di) {
-  const later = di > todayIdx();
+  const locked = !dayOpen(di);
   const T = PLAN[di][2].map((t, ti) => {
     const x = taskInfo(t, di, ti);
-    // 錯題本、⭐⭐ 重做要到當天才能做，之前不算進完成度
-    if (later && (t.k === 'wrong' || t.k === 'rev')) Object.assign(x, {later: 1, start: 0, pct: 0, sub: `到 ${PLAN[di][0]} 才能做，之前不算進完成度 · 約 ${x.min} 分鐘`});
+    if (locked && (t.k === 'wrong' || t.k === 'rev')) Object.assign(x, {later: 1, start: 0, pct: 0, sub: `前面的日子都 100% 後開放（最晚 ${PLAN[di][0]}）· 約 ${x.min} 分鐘`});
     return x;
-  }), req = T.filter(x => !x.opt && !x.later);
+  }), req = T.filter(x => !x.opt);
   const min = req.reduce((a, x) => a + x.min, 0), tot = T.filter(x => !x.opt).reduce((a, x) => a + x.min, 0);
   return {T, min, tot, pct: min ? req.reduce((a, x) => a + x.min * x.pct, 0) / min : 1,
     n: T.reduce((a, x) => a + (x.n || 0), 0), right: T.reduce((a, x) => a + (x.right || 0), 0)};
@@ -240,20 +241,23 @@ function composite(ti) {
 
 function planTab() {
   const ti = todayIdx();
-  if (planAuto || planDay == null) {
+  for (let n = 0; n < PLAN.length; n++) {
     const k = PLAN.findIndex((p, k) => Math.round(dayInfo(k).pct * 100) < 100);
-    planDay = k < 0 ? PLAN.length - 1 : k;
+    if (planAuto || planDay == null) planDay = k < 0 ? PLAN.length - 1 : k;
+    if (k < 0 || planDay !== k || dayOpen(k)) break;
+    // 前面的日子都 100% 了：這天的錯題本、⭐⭐ 重做提前開放
+    (S.plan.open = S.plan.open || {})[k] = Date.now(); save();
   }
   const di = planDay, D = dayInfo(di), [date, wd] = PLAN[di];
   let h = `<div class="card"><label>日期 <select data-plan="day">${PLAN.map((p, k) =>
     `<option value="${k}" ${k === di ? 'selected' : ''}>${p[0]}（${p[1]}）${k === ti ? '・今天' : ''}</option>`).join('')}</select></label>
-    <div class="mut">從 10/1 開始排：前 4 天理財工具、接著 6 天規劃實務，最後 4 天模擬考＋清錯題。題目類作業會自動算進度（在這裡按「開始」，或在練習、模擬考分頁做的都算）；讀筆記類讀完自己打勾。打開時會自動跳到最前面一天還沒 100% 的日子（手動選過日期就不自動換）；錯題本、⭐⭐ 重做到當天才開放，之前不算進那天的完成度。</div>${syncBadge()}</div>`;
+    <div class="mut">從 10/1 開始排：前 4 天理財工具、接著 6 天規劃實務，最後 4 天模擬考＋清錯題。題目類作業會自動算進度（在這裡按「開始」，或在練習、模擬考分頁做的都算）；讀筆記類讀完自己打勾。打開時會自動跳到最前面一天還沒 100% 的日子（手動選過日期就不自動換）；前面的日子都 100% 後，下一天的錯題本、⭐⭐ 重做會提前開放，可以一天一天往下做。</div>${syncBadge()}</div>`;
   h += `<div class="card"><div class="rt"><b>${date}（${wd}）的作業</b><span>預計 ${(D.tot / 60).toFixed(1)} 小時</span></div>
     <div class="big">${Math.round(D.pct * 100)}%</div><div class="pbar"><i style="width:${D.pct * 100}%"></i></div>
     <div class="mut">完成度（依每項預計時間加權）${D.n ? ` · 這天的題目上次答對率 ${Math.round(D.right / D.n * 100)}%（${D.right}/${D.n}）` : ''}</div></div>`;
   D.T.forEach((x, k) => {
     const ok = x.pct >= 1;
-    h += `<div class="card"><div class="rt"><b>${x.later ? '⏳' : ok ? '✅' : x.pct > 0 ? '🟡' : '⬜'} ${esc(x.title)}</b><span>${x.later ? '當天開放' : Math.round(x.pct * 100) + '%'}</span></div>
+    h += `<div class="card"><div class="rt"><b>${x.later ? '⏳' : ok ? '✅' : x.pct > 0 ? '🟡' : '⬜'} ${esc(x.title)}</b><span>${x.later ? '尚未開放' : Math.round(x.pct * 100) + '%'}</span></div>
       <div class="mut">${esc(x.sub)}</div><div class="pbar"><i style="width:${x.pct * 100}%"></i></div>
       ${x.start ? `<button class="primary" data-act="pstart" data-arg="${di}-${k}">${x.pct > 0 ? '繼續' : '開始'}</button>` : ''}
       ${x.mock ? `<button class="primary" data-act="mstart" data-arg="${x.mock}">開始模擬考</button>` : ''}
@@ -663,8 +667,10 @@ function mergeState(L, R) {
     snap[k] = useB ? b : a;
     if (t) snapT[k] = t;
   });
+  const open = {};
+  [lp.open, rp.open].forEach(m => each(m, ([k, t]) => { if (ok(t)) open[k] = Math.min(open[k] || Infinity, t); }));
   const psess = [L.psess, R.psess].filter(p => p && ok(p.t)).sort((a, b) => b.t - a.t)[0] || null;
-  Object.assign(L, {rec, mock, hist: hist.slice(0, 300), plan: {chk, snap, snapT}, psess, resetAt: cut});
+  Object.assign(L, {rec, mock, hist: hist.slice(0, 300), plan: {chk, snap, snapT, open}, psess, resetAt: cut});
 }
 async function syncNow(rerender) {
   if (!syncCfg().token || syncBusy) return;
@@ -707,7 +713,7 @@ function syncCard() {
     <button data-act="syncnow">立即同步</button><button data-act="synccopy">📋 複製金鑰（貼到另一台）</button><button data-act="syncoff">這台停止同步</button></div>`;
 }
 
-const PAGE_VER = '1790800676';
+const PAGE_VER = '1790801001';
 function checkUpdate() {
   if (document.getElementById('newver')) return;
   fetch('index.html?x=' + Date.now(), {cache: 'no-store'}).then(r => r.text()).then(t => {
