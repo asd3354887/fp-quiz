@@ -121,7 +121,7 @@ function record(q, n, fromWrong) {
 function home() {
   view = 'home'; sess = null; stopTimer();
   const tabs = [['plan', '📅 每日'], ['practice', '練習'], ['mock', '模擬考'], ['wrong', '錯題本'], ['stats', '紀錄']];
-  let h = `<header><div class="hrow"><h1>理財規劃人員 互動題庫</h1><span class="links"><a href="note.html?v=1790800050">📖 筆記</a><a href="answers.html?v=1790800050">✅ 解析</a><a href="numbers.html?v=1790800050">🔢 數字</a><a href="predict.html?v=1790800050">🎯 預測</a></span></div><nav>${tabs.map(([k, v]) =>
+  let h = `<header><div class="hrow"><h1>理財規劃人員 互動題庫</h1><span class="links"><a href="note.html?v=1790800676">📖 筆記</a><a href="answers.html?v=1790800676">✅ 解析</a><a href="numbers.html?v=1790800676">🔢 數字</a><a href="predict.html?v=1790800676">🎯 預測</a></span></div><nav>${tabs.map(([k, v]) =>
     `<button class="tab ${tab === k ? 'on' : ''}" data-act="tab" data-arg="${k}">${v}</button>`).join('')}</nav></header><main>`;
   if (!['plan', 'practice', 'mock', 'wrong', 'stats'].includes(tab)) tab = 'plan';
   h += (tab !== 'mock' ? sessCard() : '') + {plan: planTab, practice: practiceTab, mock: mockTab, wrong: wrongTab, stats: statsTab}[tab]();
@@ -158,14 +158,14 @@ const PLAN = [
   ['10/13', '二', [M('predCtool', 80), C('筆記「第 4 部分」背誦總表＋「第 5 部分」公式卡', 60, ['第 4 部分', '第 5 部分']), W('all', 40), M('predCplan', 120, 1)]],
   ['10/14', '三・考試', [C('出門前看「第 5 部分」公式卡', 15, '第 5 部分'), C('准考證、身分證、文具帶齊', 5), C('第一科考完休息時看「第 4 部分」背誦總表的實務部分', 15, '第 4 部分')]]
 ];
-let planDay = null;
+let planDay = null, planAuto = true;
 const chName = (s, c) => DATA.blocks[s][c][0];
 const hiSet = (s, ch, star) => DATA.hot.concat(DATA.old).filter(q => q.s === s && (!ch || q.ch === ch) && q.star >= star && q.ans != null);
 const qMin = n => Math.max(5, Math.round(n * 60 / RATE));
 const dayTime = di => { const [m, d] = PLAN[di][0].split('/'); return new Date(YEAR, m - 1, d).getTime(); };
 function noteHref(prefix) {
   const ids = [].concat(prefix).map(p => Object.keys(NOTE).find(t => t.startsWith(p))).filter(Boolean).map(k => NOTE[k]);
-  return `note.html?v=1790800050${ids.length ? '&only=' + encodeURIComponent(ids.join(',')) : ''}`;
+  return `note.html?v=1790800676${ids.length ? '&only=' + encodeURIComponent(ids.join(',')) : ''}`;
 }
 function todayIdx() { const t = Date.now(); let i = -1; PLAN.forEach((p, k) => { if (t >= dayTime(k)) i = k; }); return i; }
 
@@ -210,9 +210,15 @@ function taskInfo(t, di, ti) {
 }
 
 function dayInfo(di) {
-  const T = PLAN[di][2].map((t, ti) => taskInfo(t, di, ti)), req = T.filter(x => !x.opt);
-  const min = req.reduce((a, x) => a + x.min, 0);
-  return {T, min, pct: min ? req.reduce((a, x) => a + x.min * x.pct, 0) / min : 0,
+  const later = di > todayIdx();
+  const T = PLAN[di][2].map((t, ti) => {
+    const x = taskInfo(t, di, ti);
+    // 錯題本、⭐⭐ 重做要到當天才能做，之前不算進完成度
+    if (later && (t.k === 'wrong' || t.k === 'rev')) Object.assign(x, {later: 1, start: 0, pct: 0, sub: `到 ${PLAN[di][0]} 才能做，之前不算進完成度 · 約 ${x.min} 分鐘`});
+    return x;
+  }), req = T.filter(x => !x.opt && !x.later);
+  const min = req.reduce((a, x) => a + x.min, 0), tot = T.filter(x => !x.opt).reduce((a, x) => a + x.min, 0);
+  return {T, min, tot, pct: min ? req.reduce((a, x) => a + x.min * x.pct, 0) / min : 1,
     n: T.reduce((a, x) => a + (x.n || 0), 0), right: T.reduce((a, x) => a + (x.right || 0), 0)};
 }
 
@@ -234,23 +240,20 @@ function composite(ti) {
 
 function planTab() {
   const ti = todayIdx();
-  if (planDay == null) {
-    // 錯題本、⭐⭐ 重做要到當天才算，未來的日子先不看這兩類
-    const open = k => { const d = dayInfo(k); return k <= ti ? Math.round(d.pct * 100) < 100
-      : d.T.some((x, j) => !x.opt && Math.round(x.pct * 100) < 100 && !['wrong', 'rev'].includes(PLAN[k][2][j].k)); };
-    const k = PLAN.findIndex((p, k) => open(k));
+  if (planAuto || planDay == null) {
+    const k = PLAN.findIndex((p, k) => Math.round(dayInfo(k).pct * 100) < 100);
     planDay = k < 0 ? PLAN.length - 1 : k;
   }
   const di = planDay, D = dayInfo(di), [date, wd] = PLAN[di];
   let h = `<div class="card"><label>日期 <select data-plan="day">${PLAN.map((p, k) =>
     `<option value="${k}" ${k === di ? 'selected' : ''}>${p[0]}（${p[1]}）${k === ti ? '・今天' : ''}</option>`).join('')}</select></label>
-    <div class="mut">從 10/1 開始排：前 4 天理財工具、接著 6 天規劃實務，最後 4 天模擬考＋清錯題。題目類作業會自動算進度（在這裡按「開始」，或在練習、模擬考分頁做的都算）；讀筆記類讀完自己打勾。打開時會自動跳到最前面一天還沒 100% 的日子。</div>${syncBadge()}</div>`;
-  h += `<div class="card"><div class="rt"><b>${date}（${wd}）的作業</b><span>預計 ${(D.min / 60).toFixed(1)} 小時</span></div>
+    <div class="mut">從 10/1 開始排：前 4 天理財工具、接著 6 天規劃實務，最後 4 天模擬考＋清錯題。題目類作業會自動算進度（在這裡按「開始」，或在練習、模擬考分頁做的都算）；讀筆記類讀完自己打勾。打開時會自動跳到最前面一天還沒 100% 的日子（手動選過日期就不自動換）；錯題本、⭐⭐ 重做到當天才開放，之前不算進那天的完成度。</div>${syncBadge()}</div>`;
+  h += `<div class="card"><div class="rt"><b>${date}（${wd}）的作業</b><span>預計 ${(D.tot / 60).toFixed(1)} 小時</span></div>
     <div class="big">${Math.round(D.pct * 100)}%</div><div class="pbar"><i style="width:${D.pct * 100}%"></i></div>
     <div class="mut">完成度（依每項預計時間加權）${D.n ? ` · 這天的題目上次答對率 ${Math.round(D.right / D.n * 100)}%（${D.right}/${D.n}）` : ''}</div></div>`;
   D.T.forEach((x, k) => {
     const ok = x.pct >= 1;
-    h += `<div class="card"><div class="rt"><b>${ok ? '✅' : x.pct > 0 ? '🟡' : '⬜'} ${esc(x.title)}</b><span>${Math.round(x.pct * 100)}%</span></div>
+    h += `<div class="card"><div class="rt"><b>${x.later ? '⏳' : ok ? '✅' : x.pct > 0 ? '🟡' : '⬜'} ${esc(x.title)}</b><span>${x.later ? '當天開放' : Math.round(x.pct * 100) + '%'}</span></div>
       <div class="mut">${esc(x.sub)}</div><div class="pbar"><i style="width:${x.pct * 100}%"></i></div>
       ${x.start ? `<button class="primary" data-act="pstart" data-arg="${di}-${k}">${x.pct > 0 ? '繼續' : '開始'}</button>` : ''}
       ${x.mock ? `<button class="primary" data-act="mstart" data-arg="${x.mock}">開始模擬考</button>` : ''}
@@ -267,7 +270,7 @@ function planTab() {
   PLAN.forEach((p, k) => {
     const d = k === di ? D : dayInfo(k);
     h += `<button class="row" data-act="pday" data-arg="${k}"><div class="rt"><b>${k === di ? '▶ ' : ''}${p[0]}（${p[1]}）${k === ti ? '・今天' : ''}</b>
-      <span>${Math.round(d.pct * 100)}% · ${(d.min / 60).toFixed(1)} 小時</span></div><div class="pbar"><i style="width:${d.pct * 100}%"></i></div></button>`;
+      <span>${Math.round(d.pct * 100)}% · ${(d.tot / 60).toFixed(1)} 小時</span></div><div class="pbar"><i style="width:${d.pct * 100}%"></i></div></button>`;
   });
   return h + '</div>';
 }
@@ -510,7 +513,7 @@ function act(a, arg) {
     case 'tab': tab = arg; home(); break;
     case 'home': home(); break;
     case 'subj': S.prefs.s = arg; save(); home(); break;
-    case 'pday': planDay = +arg; home(); window.scrollTo(0, 0); break;
+    case 'pday': planDay = +arg; planAuto = false; home(); window.scrollTo(0, 0); break;
     case 'pchk': S.plan.chk[arg] = S.plan.chk[arg] > 0 ? -Date.now() : Date.now(); save(); home(); break;
     case 'pstart': {
       const [di, ti] = arg.split('-').map(Number), t = PLAN[di][2][ti];
@@ -582,7 +585,7 @@ app.addEventListener('click', e => {
   if (b && !b.disabled) act(b.dataset.act, b.dataset.arg);
 });
 app.addEventListener('change', e => {
-  if (e.target.dataset.plan) { planDay = +e.target.value; home(); return; }
+  if (e.target.dataset.plan) { planDay = +e.target.value; planAuto = false; home(); return; }
   const k = e.target.dataset.pref;
   if (!k) return;
   S.prefs[k] = k === 'shuf' ? e.target.checked : k === 'star' ? +e.target.value : e.target.value;
@@ -704,7 +707,7 @@ function syncCard() {
     <button data-act="syncnow">立即同步</button><button data-act="synccopy">📋 複製金鑰（貼到另一台）</button><button data-act="syncoff">這台停止同步</button></div>`;
 }
 
-const PAGE_VER = '1790800050';
+const PAGE_VER = '1790800676';
 function checkUpdate() {
   if (document.getElementById('newver')) return;
   fetch('index.html?x=' + Date.now(), {cache: 'no-store'}).then(r => r.text()).then(t => {
