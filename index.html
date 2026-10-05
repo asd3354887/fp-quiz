@@ -607,6 +607,7 @@ const SYNC_KEY = 'quizsync_v1', GIST_DESC = 'asd-quiz-sync', SYNC_FILE = KEY + '
 // GitHub 每帳號每小時只能改 gist 100 次，兩個網站共用；上傳時間與暫停時間存在共用的 localStorage
 const PUT_KEY = 'quizsync_lastput', HOLD_KEY = 'quizsync_hold', PUT_GAP = 90 * 1000, FLUSH_GAP = 15 * 1000, PULL_GAP = 60 * 1000;
 let syncBusy = false, syncLast = 0, syncErr = '', syncErrKind = '', syncTimer = null, editVer = 0;
+let gistChecked = 0, gistExtra = [], gistOwner = '';
 function syncCfg() { try { return JSON.parse(localStorage.getItem(SYNC_KEY)) || {}; } catch (e) { return {}; } }
 function setSyncCfg(c) { try { localStorage.setItem(SYNC_KEY, JSON.stringify(c)); } catch (e) {} }
 const lsNum = k => { try { return +localStorage.getItem(k) || 0; } catch (e) { return 0; } };
@@ -634,18 +635,27 @@ async function gh(path, opt) {
   }
   if (r.status === 404 && /^\/gists\/\w+$/.test(path) && syncCfg().gist) throw syncFail('gone', '雲端同步檔不見了');
   if (r.status === 401) throw syncFail('auth', '金鑰無效或已過期，請重新產生');
-  if (r.status === 403 || r.status === 404) throw syncFail('auth', '金鑰沒有勾 gist 權限');
+  if (r.status === 403 || r.status === 404) throw syncFail('auth', '金鑰沒有 gist 權限：請用下面連結產生 ghp_ 開頭、有勾 gist 的金鑰');
   throw syncFail('net', `GitHub 回應錯誤 ${r.status}`);
 }
+// 同帳號若有多份同步檔（兩台同時第一次設定），一律用最早建立的那份，其他份的進度併進來
 async function gistId() {
   const c = syncCfg();
-  if (c.gist) return c.gist;
-  const list = await gh('/gists?per_page=100');
-  let g = list.find(x => x.description === GIST_DESC);
+  if (c.gist && Date.now() - gistChecked < 10 * 60 * 1000) return c.gist;
+  const list = (await gh('/gists?per_page=100')).filter(x => x.description === GIST_DESC)
+    .sort((a, b) => (a.created_at || '').localeCompare(b.created_at || ''));
+  let g = list[0];
   if (!g) g = await gh('/gists', {method: 'POST', body: JSON.stringify({description: GIST_DESC, public: false,
     files: {'README.md': {content: '手機、電腦題庫進度同步用，請勿刪除'}}})});
+  gistExtra = list.slice(1).map(x => x.id);
+  if (c.gist && c.gist !== g.id && !gistExtra.includes(c.gist)) gistExtra.push(c.gist);
+  gistChecked = Date.now();
   setSyncCfg(Object.assign(syncCfg(), {gist: g.id}));
   return g.id;
+}
+async function gistFile(g) {
+  const f = g.files[SYNC_FILE];
+  return f ? (f.truncated ? await (await fetch(f.raw_url, {cache: 'no-store'})).text() : f.content) : null;
 }
 function shareState(x) {
   return {rec: x.rec, wrong: x.wrong, gone: x.gone || {}, fav: x.fav, favGone: x.favGone || {}, mock: x.mock, hist: x.hist,
@@ -693,17 +703,23 @@ function mergeState(L, R) {
 async function syncNow(rerender, gap = PUT_GAP) {
   if (!syncCfg().token || syncBusy) return;
   syncBusy = true;
-  const v = editVer, before = JSON.stringify(shareState(S));
+  const v = editVer, before = JSON.stringify(shareState(S)), owner0 = gistOwner;
   let next = 0;
   try {
     let id = await gistId(), g;
     try { g = await gh('/gists/' + id); } catch (e) {
       if (e.kind !== 'gone') throw e;
-      setSyncCfg(Object.assign(syncCfg(), {gist: ''}));
+      setSyncCfg(Object.assign(syncCfg(), {gist: ''})); gistChecked = 0;
       id = await gistId(); g = await gh('/gists/' + id);
     }
-    const f = g.files[SYNC_FILE];
-    const raw = f ? (f.truncated ? await (await fetch(f.raw_url, {cache: 'no-store'})).text() : f.content) : null;
+    gistOwner = (g.owner && g.owner.login) || gistOwner;
+    for (const xid of gistExtra.splice(0)) {
+      try {
+        const xraw = await gistFile(await gh('/gists/' + xid));
+        if (xraw) { mergeState(S, JSON.parse(xraw)); localStorage.setItem(DIRTY_KEY, '1'); }
+      } catch (e) { if (e.kind !== 'gone') throw e; }
+    }
+    const raw = await gistFile(g);
     const R = raw ? JSON.parse(raw) : null;
     if (R) mergeState(S, R);
     save(true);
@@ -724,7 +740,7 @@ async function syncNow(rerender, gap = PUT_GAP) {
     else { syncErr = e.message || String(e); syncErrKind = e.kind || 'net'; }
   }
   syncBusy = false;
-  if (view === 'home' && JSON.stringify(shareState(S)) !== before) home();
+  if (view === 'home' && (gistOwner !== owner0 || JSON.stringify(shareState(S)) !== before)) home();
   else document.querySelectorAll('.syncbadge').forEach(el => { el.outerHTML = syncBadge(); });
   if (next) syncLater(next);
   else if (editVer !== v) syncLater(putWait(PUT_GAP));
@@ -747,13 +763,14 @@ function syncCard() {
     ③ 手機打開這一頁，貼上同一組金鑰（可以用 LINE 傳給自己）。</div>
     <input id="synctoken" type="password" autocomplete="off" placeholder="貼上 ghp_ 開頭的金鑰" style="width:100%;font:inherit;padding:8px;margin:8px 0;border-radius:8px;border:1px solid var(--bd);background:var(--card);color:var(--fg)">
     <button class="primary" data-act="syncset">開始同步</button>${syncErr ? `<div class="fail">${esc(syncErr)}</div>` : ''}</div>`;
-  return `<div class="card"><b>☁️ 手機、電腦進度同步：已開啟</b>${syncBadge()}
+  const who = gistOwner ? `<div class="mut">🔑 雲端帳號 <b>${esc(gistOwner)}</b>・同步檔 <b>${esc((syncCfg().gist || '').slice(0, 6))}</b>（手機和電腦這行要一模一樣，進度才會互通）</div>` : '';
+  return `<div class="card"><b>☁️ 手機、電腦進度同步：已開啟</b>${syncBadge()}${who}
     <div class="mut">網頁開著時每分鐘下載另一台的進度；做題時約每 1.5 分鐘自動上傳，切到別的 App／分頁時也會上傳。<b>手機鎖螢幕後網頁會被暫停，換裝置前按「立即同步」最保險。</b></div>
     <button data-act="syncnow">立即同步</button><button data-act="synccopy">📋 複製金鑰（貼到另一台）</button><button data-act="syncoff">這台停止同步</button></div>`;
 }
 setInterval(() => { if (document.visibilityState === 'visible') syncNow(true); }, PULL_GAP);
 
-const PAGE_VER = '1791181656';
+const PAGE_VER = '1791182099';
 function checkUpdate() {
   if (document.getElementById('newver')) return;
   fetch('index.html?x=' + Date.now(), {cache: 'no-store'}).then(r => r.text()).then(t => {
