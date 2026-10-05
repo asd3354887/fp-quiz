@@ -574,8 +574,8 @@ function act(a, arg) {
       const t = (document.getElementById('synctoken') || {}).value;
       if (!t || !t.trim()) return;
       setSyncCfg({token: t.trim()}); syncErr = ''; try { localStorage.setItem(DIRTY_KEY, '1'); } catch (e) {}
-      home(); syncNow(true).then(() => { if (syncErr) { setSyncCfg({}); home(); } }); break; }
-    case 'syncnow': syncNow(true); home(); break;
+      home(); syncNow(true, 0).then(() => { if (syncErrKind === 'auth') { setSyncCfg({}); home(); } }); break; }
+    case 'syncnow': syncNow(true, 0); home(); break;
     case 'synccopy': { const t = syncCfg().token;
       (navigator.clipboard ? navigator.clipboard.writeText(t) : Promise.reject()).then(() => alert('已複製金鑰，到另一台打開「紀錄」分頁貼上'), () => prompt('複製這組金鑰，貼到另一台', t)); break; }
     case 'sresume': resumeSess(); break;
@@ -604,20 +604,38 @@ document.addEventListener('keydown', e => {
 
 /* ---------- 手機電腦同步（GitHub Gist） ---------- */
 const SYNC_KEY = 'quizsync_v1', GIST_DESC = 'asd-quiz-sync', SYNC_FILE = KEY + '.json', DIRTY_KEY = 'quizsync_dirty_' + KEY;
-let syncBusy = false, syncLast = 0, syncErr = '', syncTimer = null, editVer = 0;
+// GitHub 每帳號每小時只能改 gist 100 次，兩個網站共用；上傳時間與暫停時間存在共用的 localStorage
+const PUT_KEY = 'quizsync_lastput', HOLD_KEY = 'quizsync_hold', PUT_GAP = 3 * 60 * 1000, FLUSH_GAP = 60 * 1000;
+let syncBusy = false, syncLast = 0, syncErr = '', syncErrKind = '', syncTimer = null, editVer = 0;
 function syncCfg() { try { return JSON.parse(localStorage.getItem(SYNC_KEY)) || {}; } catch (e) { return {}; } }
 function setSyncCfg(c) { try { localStorage.setItem(SYNC_KEY, JSON.stringify(c)); } catch (e) {} }
+const lsNum = k => { try { return +localStorage.getItem(k) || 0; } catch (e) { return 0; } };
+const holdLeft = () => Math.max(0, lsNum(HOLD_KEY) - Date.now());
+const putWait = gap => Math.max(holdLeft(), lsNum(PUT_KEY) + gap - Date.now());
+function syncLater(ms) {
+  clearTimeout(syncTimer);
+  if (syncCfg().token) syncTimer = setTimeout(() => syncNow(false), Math.max(4000, ms));
+}
 function markDirty() {
   editVer++;
   try { localStorage.setItem(DIRTY_KEY, '1'); } catch (e) {}
-  if (!syncCfg().token) return;
-  clearTimeout(syncTimer); syncTimer = setTimeout(() => syncNow(false), 4000);
+  syncLater(putWait(PUT_GAP));
 }
+function syncFail(kind, msg) { const e = new Error(msg); e.kind = kind; return e; }
 async function gh(path, opt) {
   const r = await fetch('https://api.github.com' + path, Object.assign({cache: 'no-store'}, opt,
     {headers: {Authorization: 'Bearer ' + syncCfg().token, Accept: 'application/vnd.github+json', 'Content-Type': 'application/json'}}));
-  if (!r.ok) throw new Error(r.status === 401 ? '金鑰無效或已過期，請重新產生' : r.status === 403 || r.status === 404 ? '金鑰沒有勾 gist 權限' : `GitHub 回應錯誤 ${r.status}`);
-  return r.json();
+  if (r.ok) return r.json();
+  const h = k => r.headers.get(k), wait = +h('retry-after') || 0, msg = await r.text().catch(() => '');
+  if ((r.status === 403 || r.status === 429) && (h('x-ratelimit-remaining') === '0' || wait || /rate limit/i.test(msg))) {
+    const until = wait ? Date.now() + wait * 1000 : h('x-ratelimit-remaining') === '0' && +h('x-ratelimit-reset') ? +h('x-ratelimit-reset') * 1000 : Date.now() + 10 * 60 * 1000;
+    try { localStorage.setItem(HOLD_KEY, String(until + 5000)); } catch (e) {}
+    throw syncFail('hold', 'GitHub 暫停寫入');
+  }
+  if (r.status === 404 && /^\/gists\/\w+$/.test(path) && syncCfg().gist) throw syncFail('gone', '雲端同步檔不見了');
+  if (r.status === 401) throw syncFail('auth', '金鑰無效或已過期，請重新產生');
+  if (r.status === 403 || r.status === 404) throw syncFail('auth', '金鑰沒有勾 gist 權限');
+  throw syncFail('net', `GitHub 回應錯誤 ${r.status}`);
 }
 async function gistId() {
   const c = syncCfg();
@@ -672,48 +690,69 @@ function mergeState(L, R) {
   const psess = [L.psess, R.psess].filter(p => p && ok(p.t)).sort((a, b) => b.t - a.t)[0] || null;
   Object.assign(L, {rec, mock, hist: hist.slice(0, 300), plan: {chk, snap, snapT, open}, psess, resetAt: cut});
 }
-async function syncNow(rerender) {
+async function syncNow(rerender, gap = PUT_GAP) {
   if (!syncCfg().token || syncBusy) return;
   syncBusy = true;
   const v = editVer, before = JSON.stringify(shareState(S));
+  let next = 0;
   try {
-    const id = await gistId();
-    const g = await gh('/gists/' + id);
+    let id = await gistId(), g;
+    try { g = await gh('/gists/' + id); } catch (e) {
+      if (e.kind !== 'gone') throw e;
+      setSyncCfg(Object.assign(syncCfg(), {gist: ''}));
+      id = await gistId(); g = await gh('/gists/' + id);
+    }
     const f = g.files[SYNC_FILE];
-    const R = f ? JSON.parse(f.truncated ? await (await fetch(f.raw_url, {cache: 'no-store'})).text() : f.content) : null;
+    const raw = f ? (f.truncated ? await (await fetch(f.raw_url, {cache: 'no-store'})).text() : f.content) : null;
+    const R = raw ? JSON.parse(raw) : null;
     if (R) mergeState(S, R);
     save(true);
     if (view === 'sess' && sess && S.psess && S.psess.ids && S.psess.t > (sess.t || 0)) resumeSess();
-    if (!R || localStorage.getItem(DIRTY_KEY)) {
-      await gh('/gists/' + id, {method: 'PATCH', body: JSON.stringify({files: {[SYNC_FILE]: {content: JSON.stringify(shareState(S))}}})});
-      if (editVer === v) localStorage.removeItem(DIRTY_KEY);
+    const body = JSON.stringify(shareState(S));
+    if (R && body === raw) { if (editVer === v) localStorage.removeItem(DIRTY_KEY); }
+    else if (!R || localStorage.getItem(DIRTY_KEY)) {
+      next = putWait(gap);
+      if (!next) {
+        try { localStorage.setItem(PUT_KEY, String(Date.now())); } catch (e) {}
+        await gh('/gists/' + id, {method: 'PATCH', body: JSON.stringify({files: {[SYNC_FILE]: {content: body}}})});
+        if (editVer === v) localStorage.removeItem(DIRTY_KEY);
+      }
     }
-    syncLast = Date.now(); syncErr = '';
+    syncLast = Date.now(); syncErr = ''; syncErrKind = '';
     if (rerender && view === 'home' && JSON.stringify(shareState(S)) !== before) home();
-  } catch (e) { syncErr = e.message || String(e); }
+  } catch (e) {
+    if (e.kind === 'hold') { syncErr = ''; syncErrKind = ''; next = holdLeft(); }
+    else { syncErr = e.message || String(e); syncErrKind = e.kind || 'net'; }
+  }
   syncBusy = false;
   if (view === 'home' && (tab === 'stats' || tab === 'plan')) home();
-  if (editVer !== v && syncCfg().token) { clearTimeout(syncTimer); syncTimer = setTimeout(() => syncNow(false), 4000); }
+  if (next) syncLater(next);
+  else if (editVer !== v) syncLater(putWait(PUT_GAP));
 }
-const syncTime = () => new Date(syncLast).toLocaleTimeString('zh-TW', {hour12: false, hour: '2-digit', minute: '2-digit'});
+const hhmm = t => new Date(t).toLocaleTimeString('zh-TW', {hour12: false, hour: '2-digit', minute: '2-digit'});
+const syncTime = () => hhmm(syncLast);
 function syncBadge() {
   if (!syncCfg().token) return '<div class="mut">☁️ 手機、電腦進度同步：到「紀錄」分頁設定一次即可</div>';
-  return `<div class="mut">☁️ ${syncBusy ? '同步中…' : syncErr ? `<span class="fail">同步失敗：${esc(syncErr)}</span>` : syncLast ? `已同步（${syncTime()}）` : '等待同步'}</div>`;
+  const pend = localStorage.getItem(DIRTY_KEY), hold = holdLeft();
+  const s = syncBusy ? '同步中…' : syncErr ? `<span class="fail">同步失敗：${esc(syncErr)}</span>`
+    : hold ? `⏳ GitHub 每小時寫入次數已滿，${hhmm(Date.now() + hold)} 後自動上傳（進度已存在這台，不會消失）`
+    : !syncLast ? '等待同步' : pend ? `已同步（${syncTime()}），新作答會在 3 分鐘內自動上傳` : `已同步（${syncTime()}）`;
+  return `<div class="mut">☁️ ${s}</div>`;
 }
 function syncCard() {
   if (!syncCfg().token) return `<div class="card"><b>☁️ 手機、電腦進度同步</b>
-    <div class="mut">設定一次後，每次打開網頁、做完題目幾秒後都會自動同步。理財規劃和內控兩個網站共用同一組金鑰，進度分開存。<br>
+    <div class="mut">設定一次後，打開網頁時會下載進度、做題時每 3 分鐘自動上傳。理財規劃和內控兩個網站共用同一組金鑰，進度分開存。<br>
     ① 電腦登入 GitHub 後打開 <a href="https://github.com/settings/tokens/new?scopes=gist&description=quiz-sync" target="_blank" rel="noopener">這個連結</a>（已自動勾好 gist），「Expiration」選 90 days，拉到最下面按「Generate token」。<br>
     ② 複製 ghp_ 開頭的金鑰，貼到下面，按「開始同步」。<br>
     ③ 手機打開這一頁，貼上同一組金鑰（可以用 LINE 傳給自己）。</div>
     <input id="synctoken" type="password" autocomplete="off" placeholder="貼上 ghp_ 開頭的金鑰" style="width:100%;font:inherit;padding:8px;margin:8px 0;border-radius:8px;border:1px solid var(--bd);background:var(--card);color:var(--fg)">
     <button class="primary" data-act="syncset">開始同步</button>${syncErr ? `<div class="fail">${esc(syncErr)}</div>` : ''}</div>`;
   return `<div class="card"><b>☁️ 手機、電腦進度同步：已開啟</b>${syncBadge()}
-    <div class="mut">每次打開網頁、做完題目幾秒後會自動同步；換裝置前也可以按「立即同步」。</div>
+    <div class="mut">打開網頁時會下載進度；做題時每 3 分鐘自動上傳一次，切到別的 App／分頁時也會上傳。<b>換裝置前按「立即同步」最保險。</b></div>
     <button data-act="syncnow">立即同步</button><button data-act="synccopy">📋 複製金鑰（貼到另一台）</button><button data-act="syncoff">這台停止同步</button></div>`;
 }
 
-const PAGE_VER = '1790801001';
+const PAGE_VER = '1791181061';
 function checkUpdate() {
   if (document.getElementById('newver')) return;
   fetch('index.html?x=' + Date.now(), {cache: 'no-store'}).then(r => r.text()).then(t => {
@@ -732,7 +771,7 @@ home();
 if (syncCfg().token) syncNow(true);
 document.addEventListener('visibilitychange', () => {
   if (document.visibilityState === 'visible') { syncNow(true); checkUpdate(); }
-  else if (localStorage.getItem(DIRTY_KEY)) syncNow(false);
+  else if (localStorage.getItem(DIRTY_KEY)) syncNow(false, FLUSH_GAP);
 });
 setInterval(checkUpdate, 30 * 60 * 1000);
 </script>
