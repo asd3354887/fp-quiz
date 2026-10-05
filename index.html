@@ -605,7 +605,7 @@ document.addEventListener('keydown', e => {
 /* ---------- 手機電腦同步（GitHub Gist） ---------- */
 const SYNC_KEY = 'quizsync_v1', GIST_DESC = 'asd-quiz-sync', SYNC_FILE = KEY + '.json', DIRTY_KEY = 'quizsync_dirty_' + KEY;
 // GitHub 每帳號每小時只能改 gist 100 次，兩個網站共用；上傳時間與暫停時間存在共用的 localStorage
-const PUT_KEY = 'quizsync_lastput', HOLD_KEY = 'quizsync_hold', PUT_GAP = 3 * 60 * 1000, FLUSH_GAP = 60 * 1000;
+const PUT_KEY = 'quizsync_lastput', HOLD_KEY = 'quizsync_hold', PUT_GAP = 90 * 1000, FLUSH_GAP = 15 * 1000, PULL_GAP = 60 * 1000;
 let syncBusy = false, syncLast = 0, syncErr = '', syncErrKind = '', syncTimer = null, editVer = 0;
 function syncCfg() { try { return JSON.parse(localStorage.getItem(SYNC_KEY)) || {}; } catch (e) { return {}; } }
 function setSyncCfg(c) { try { localStorage.setItem(SYNC_KEY, JSON.stringify(c)); } catch (e) {} }
@@ -719,40 +719,41 @@ async function syncNow(rerender, gap = PUT_GAP) {
       }
     }
     syncLast = Date.now(); syncErr = ''; syncErrKind = '';
-    if (rerender && view === 'home' && JSON.stringify(shareState(S)) !== before) home();
   } catch (e) {
     if (e.kind === 'hold') { syncErr = ''; syncErrKind = ''; next = holdLeft(); }
     else { syncErr = e.message || String(e); syncErrKind = e.kind || 'net'; }
   }
   syncBusy = false;
-  if (view === 'home' && (tab === 'stats' || tab === 'plan')) home();
+  if (view === 'home' && JSON.stringify(shareState(S)) !== before) home();
+  else document.querySelectorAll('.syncbadge').forEach(el => { el.outerHTML = syncBadge(); });
   if (next) syncLater(next);
   else if (editVer !== v) syncLater(putWait(PUT_GAP));
 }
 const hhmm = t => new Date(t).toLocaleTimeString('zh-TW', {hour12: false, hour: '2-digit', minute: '2-digit'});
 const syncTime = () => hhmm(syncLast);
 function syncBadge() {
-  if (!syncCfg().token) return '<div class="mut">☁️ 手機、電腦進度同步：到「紀錄」分頁設定一次即可</div>';
+  if (!syncCfg().token) return '<div class="mut syncbadge">☁️ 手機、電腦進度同步：到「紀錄」分頁設定一次即可</div>';
   const pend = localStorage.getItem(DIRTY_KEY), hold = holdLeft();
   const s = syncBusy ? '同步中…' : syncErr ? `<span class="fail">同步失敗：${esc(syncErr)}</span>`
     : hold ? `⏳ GitHub 每小時寫入次數已滿，${hhmm(Date.now() + hold)} 後自動上傳（進度已存在這台，不會消失）`
-    : !syncLast ? '等待同步' : pend ? `已同步（${syncTime()}），新作答會在 3 分鐘內自動上傳` : `已同步（${syncTime()}）`;
-  return `<div class="mut">☁️ ${s}</div>`;
+    : !syncLast ? '等待同步' : pend ? `已同步（${syncTime()}），這台的新作答 2 分鐘內自動上傳；要換裝置請先按「立即同步」` : `已同步（${syncTime()}）`;
+  return `<div class="mut syncbadge">☁️ ${s}</div>`;
 }
 function syncCard() {
   if (!syncCfg().token) return `<div class="card"><b>☁️ 手機、電腦進度同步</b>
-    <div class="mut">設定一次後，打開網頁時會下載進度、做題時每 3 分鐘自動上傳。理財規劃和內控兩個網站共用同一組金鑰，進度分開存。<br>
+    <div class="mut">設定一次後，網頁開著時每分鐘下載另一台的進度、做題時約每 1.5 分鐘自動上傳。理財規劃和內控兩個網站共用同一組金鑰，進度分開存。<br>
     ① 電腦登入 GitHub 後打開 <a href="https://github.com/settings/tokens/new?scopes=gist&description=quiz-sync" target="_blank" rel="noopener">這個連結</a>（已自動勾好 gist），「Expiration」選 90 days，拉到最下面按「Generate token」。<br>
     ② 複製 ghp_ 開頭的金鑰，貼到下面，按「開始同步」。<br>
     ③ 手機打開這一頁，貼上同一組金鑰（可以用 LINE 傳給自己）。</div>
     <input id="synctoken" type="password" autocomplete="off" placeholder="貼上 ghp_ 開頭的金鑰" style="width:100%;font:inherit;padding:8px;margin:8px 0;border-radius:8px;border:1px solid var(--bd);background:var(--card);color:var(--fg)">
     <button class="primary" data-act="syncset">開始同步</button>${syncErr ? `<div class="fail">${esc(syncErr)}</div>` : ''}</div>`;
   return `<div class="card"><b>☁️ 手機、電腦進度同步：已開啟</b>${syncBadge()}
-    <div class="mut">打開網頁時會下載進度；做題時每 3 分鐘自動上傳一次，切到別的 App／分頁時也會上傳。<b>換裝置前按「立即同步」最保險。</b></div>
+    <div class="mut">網頁開著時每分鐘下載另一台的進度；做題時約每 1.5 分鐘自動上傳，切到別的 App／分頁時也會上傳。<b>手機鎖螢幕後網頁會被暫停，換裝置前按「立即同步」最保險。</b></div>
     <button data-act="syncnow">立即同步</button><button data-act="synccopy">📋 複製金鑰（貼到另一台）</button><button data-act="syncoff">這台停止同步</button></div>`;
 }
+setInterval(() => { if (document.visibilityState === 'visible') syncNow(true); }, PULL_GAP);
 
-const PAGE_VER = '1791181061';
+const PAGE_VER = '1791181656';
 function checkUpdate() {
   if (document.getElementById('newver')) return;
   fetch('index.html?x=' + Date.now(), {cache: 'no-store'}).then(r => r.text()).then(t => {
