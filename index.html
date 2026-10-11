@@ -459,6 +459,23 @@ function anaList(s, k) {
   return {list: wrong.concat(fresh).slice(0, 40), title: `${SHORT[s]}｜${ch} 弱點`};
 }
 
+function boostPw(q, ft) {
+  const r = S.rec[q.id];
+  if (!r) return 1 - ft;
+  let pw = (r.w + 2 * (1 - ft)) / (r.c + r.w + 2);
+  if (!r.last) pw = Math.max(pw, r.w >= 2 ? 0.75 : 0.6);
+  else if (!r.w && r.c === 1) pw += 0.1 * Math.min(1, (Date.now() - (r.t || 0)) / 6048e5);
+  return pw;
+}
+function boostList(s, n = 30) {
+  const ft = anaData(s).ft, now = Date.now();
+  const L = POOL[s].filter(q => q.ans != null).map(q => {
+    const r = S.rec[q.id], v = (q.sw || 0.005) * boostPw(q, ft) * (r && now - (r.t || 0) < 72e5 ? 0.3 : 1);
+    return {q, v, key: Math.pow(Math.random(), 1 / v)};
+  }).sort((a, b) => b.v - a.v).slice(0, n * 3).sort((a, b) => b.key - a.key).slice(0, n);
+  return {list: L.map(x => x.q), gain: L.reduce((a, x) => a + x.v, 0) * 100 / NQ(s)};
+}
+
 function anaTab() {
   let h = '<div class="card mut">依你在練習、模擬考、預測卷的作答紀錄，分析每一科哪裡最需要加強（開同步後手機、電腦合併計算）。「預估失分」用仿真模擬考同一套考試機率加權：越可能考的題影響越大。</div>';
   SUBS.forEach(s => {
@@ -488,6 +505,7 @@ function anaTab() {
       adv.push(`計算題平均 ${Math.round(d.tq.calc.s / d.tq.calc.n)} 秒／題（觀念題 ${Math.round(d.tq.idea.s / d.tq.idea.n)} 秒）：考試時計算題先跳過、觀念題做完再回來算`);
     if (d.rep) adv.push(`有 ${d.rep} 題錯 2 次以上、上次也錯 → 按下面「重做常錯題」`);
     if (adv.length) h += `<div style="margin:8px 0">${adv.map(a => `<p style="margin:4px 0">• ${a}</p>`).join('')}</div>`;
+    h += `<div style="margin:8px 0"><button class="primary" data-act="bstart" data-arg="${s}">🚀 提分衝刺 30 題（每次重抽）</button><div class="mut">照「真考出現機率 × 你答錯的機率」抽題：上次錯的、對錯不穩的、只對過一次又隔很久的、很可能考但還沒做過的優先；2 小時內剛做過的先少出。每題即時看解析，答對後下次就少出。仿真模擬考是量實力，這個是補分數。</div></div>`;
     h += top.map(c => `<button data-act="astart" data-arg="${s}|${c.idx}">練「${esc(c.ch)}」錯題＋沒做過</button>`).join('');
     h += `<button data-act="astart" data-arg="${s}|new">最可能考、還沒做過的 40 題</button><button data-act="astart" data-arg="${s}|w" ${d.rep ? '' : 'disabled'}>重做常錯題（${d.rep} 題）</button>`;
     h += `<div class="mut" style="margin-top:10px">各章（依預估失分排序；秒／題＝模擬考每題平均停留秒數，限時平均每題 ${Math.round(d.pace)} 秒）</div><table><tr><th>章節（考幾題）</th><th>做過</th><th>上次答對</th><th>模擬考答對</th><th>預估失分</th><th>秒／題</th></tr>` +
@@ -499,7 +517,7 @@ function anaTab() {
       ['練習', '歷屆原卷', '預測卷', '仿真模擬考', '隨機模擬考'].filter(k => d.src[k]).map(k => { const g = d.src[k];
         return `<tr><td>${k}</td><td>${g.t || '—'}</td><td>${g.t ? pct(g.c, g.t) : '—'}</td><td>${g.sc.slice(0, 3).join('、') || '—'}</td></tr>`; }).join('') + '</table></div>';
   });
-  h += '<div class="card mut">推估方法：每章的「上次答對率」依考試機率加權，有模擬考作答的章節再和模擬考答對率平均（模擬考作答滿 10 題時各占一半）；還沒做過的題和真考完全沒看過的題，都用你第一次作答的答對率估，再算出整科分數與及格機率。這是方向不是保證，最準的還是仿真模擬考的實際分數。這次更新前做的模擬考只有分數、沒有逐題紀錄和作答時間；校準是比較每份仿真卷交卷前的推估和實際分數；練習的答對率也含更新前的模擬考作答。</div>';
+  h += '<div class="card mut">推估方法：每章的「上次答對率」依考試機率加權，有模擬考作答的章節再和模擬考答對率平均（模擬考作答滿 10 題時各占一半）；還沒做過的題和真考完全沒看過的題，都用你第一次作答的答對率估，再算出整科分數與及格機率。這是方向不是保證，最準的還是仿真模擬考的實際分數。這次更新前做的模擬考只有分數、沒有逐題紀錄和作答時間；校準是比較每份仿真卷交卷前的推估和實際分數；練習的答對率也含更新前的模擬考作答。提分衝刺的「粗估值」＝每題真考出現機率 × 你答錯的機率加總，換算成分數：代表這份題目學會後，真考期望能多拿的分數。</div>';
   return h;
 }
 
@@ -708,6 +726,8 @@ function act(a, arg) {
       if (!confirm(`${name}\n限時 ${min} 分鐘，按確定開始計時。\n（其中 ${g.fresh} 題是你還沒做過的）`)) return;
       S.cur = {pid: `sim-${arg}`, ids: g.ids, name, min, fresh: g.fresh, ans: {}, i: 0, start: Date.now(), end: Date.now() + min * 60000};
       save(); showMock(); break; }
+    case 'bstart': { const B = boostList(arg);
+      startSession(B.list, `${SHORT[arg]}｜提分衝刺（這份粗估值 ${B.gain.toFixed(1)} 分）`, 'hot'); break; }
     case 'astart': { const [s, k] = arg.split('|'), L = anaList(s, k);
       if (!L.list.length) { alert('這裡沒有需要加強的題目了 👍'); return; }
       startSession(L.list, L.title, 'hot'); break; }
