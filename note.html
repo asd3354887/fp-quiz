@@ -5,6 +5,10 @@
 body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.7 -apple-system,"PingFang TC","Microsoft JhengHei",sans-serif;-webkit-text-size-adjust:100%}
 .top{position:sticky;top:0;z-index:5;background:var(--card);border-bottom:1px solid var(--bd);padding:8px 12px;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
 .top a{color:var(--pri);text-decoration:none;border:1px solid var(--bd);border-radius:10px;padding:6px 10px;font-size:15px;white-space:nowrap}
+.top details.more{position:relative}
+.top details.more>summary{list-style:none;cursor:pointer;border:1px solid var(--bd);border-radius:10px;padding:6px 10px;font-size:15px;color:var(--pri);user-select:none}
+.top details.more>summary::-webkit-details-marker{display:none}
+.top details.more .morebox{position:absolute;left:0;top:calc(100% + 4px);z-index:8;background:var(--card);border:1px solid var(--bd);border-radius:10px;padding:8px;display:flex;flex-direction:column;gap:6px;min-width:110px;box-shadow:0 4px 14px rgba(0,0,0,.12)}
 main{max-width:820px;margin:0 auto;padding:12px 14px 60px;background:var(--card);min-height:100vh}
 h1{font-size:22px;line-height:1.4}h2{font-size:19px;border-bottom:2px solid var(--bd);padding-bottom:4px;margin-top:28px}
 h3{font-size:17px;margin-top:22px}h1,h2,h3,h4{scroll-margin-top:60px}
@@ -17,9 +21,13 @@ pre{background:var(--code);padding:8px;overflow-x:auto;border-radius:8px}
 blockquote{margin:8px 0;padding:4px 12px;border-left:4px solid var(--bd);color:var(--mut)}
 li{margin:2px 0}p,li{word-break:break-word}
 .toc{background:var(--th);border-radius:10px;padding:8px 12px;margin:10px 0}.toc a{text-decoration:none}
-.toc ul{margin:4px 0;padding-left:18px}
+.toc ul{margin:4px 0;padding-left:18px;list-style:none}
+.toc>summary{cursor:pointer;font-weight:700;user-select:none;list-style:none}
+.toc>summary::-webkit-details-marker{display:none}
+.toc>summary::before{content:"▸ ";}
+.toc[open]>summary::before{content:"▾ ";}
 #totop{position:fixed;right:14px;bottom:18px;background:var(--pri);color:#fff;border-radius:50%;width:44px;height:44px;display:flex;align-items:center;justify-content:center;text-decoration:none;font-size:20px;box-shadow:0 2px 8px rgba(0,0,0,.3)}
-</style></head><body id="top"><div class="top"><a href="./?v=1792128235">📝 題庫</a><a href="note.html?v=1792128235">📖 筆記</a><a href="answers.html?v=1792128235">✅ 解析</a><a href="numbers.html?v=1792128235">🔢 數字</a><a href="predict.html?v=1792128235">🎯 預測</a></div><main><h1 id="理財規劃人員-讀書筆記1014-考試版">理財規劃人員 讀書筆記（10/14 考試版）</h1>
+</style></head><body id="top"><div class="top"><a href="./?v=1795638583">📝 題庫</a><a href="note.html?v=1795638583">📖 筆記</a><details class="more"><summary>⋯ 更多</summary><div class="morebox"><a href="numbers.html?v=1795638583">🔢 數字</a><a href="answers.html?v=1795638583">✅ 解析</a></div></details></div><main><h1 id="理財規劃人員-讀書筆記1014-考試版">理財規劃人員 讀書筆記（10/14 考試版）</h1>
 <blockquote>
 <p>這份是從第 27–48 屆共 1,100 題考古題分析後重寫的「直接讀」版本，<strong>只放考過的東西</strong>，每個考點都附屆次題號（<code>46-17</code>＝第 46 屆第 17 題）。
 刷題請按上方「📝 題庫」；看答案說明按「✅ 解析」。</p>
@@ -167,6 +175,7 @@ li{margin:2px 0}p,li{word-break:break-word}
 </table></div>
 <h3 id="作答技巧">作答技巧</h3>
 <ul>
+<li><strong>每章先掃「觀念速讀」</strong>（必記／易錯／怎麼辨）再刷同章⭐高頻；下面原有條列與公式表仍保留，速讀是濃縮入口不是取代。</li>
 <li><strong>否定題看絕對字眼</strong>：「何者錯誤／何者非」的題目，若有選項寫「一定、必、僅、一律、無論、完全、只要」，答案就是它的比例 <strong>58%</strong>（隨便猜只有 36%）。只在真的不會時用。</li>
 <li><strong>每個選項都要懂</strong>：錯的選項常是另一題的正解。</li>
 <li><strong>第一科債券價格題</strong>：沒有表，先用「殖利率 &gt; 票面利率 → 價格 &lt; 面額」刪掉一半選項。</li>
@@ -293,18 +302,108 @@ li{margin:2px 0}p,li{word-break:break-word}
 <hr />
 <h2 id="第-2-部分-第一科-理財工具">第 2 部分 第一科 理財工具</h2>
 <h3 id="工具-1｜金融機構題號-1–3每屆-3-題">工具 1｜金融機構（題號 1–3，每屆 3 題）</h3>
+<h4 id="觀念速讀先懂再刷">觀念速讀（先懂再刷）</h4>
+<blockquote>
+<p>一句：本章每屆約 <strong>3</strong> 題；先抓「定存中途解約利息打折、押匯風險序、銀／證商誰能做什麼、數字門檻」。</p>
+</blockquote>
+<p><strong>必記</strong></p>
 <ul>
-<li>定期存款<strong>中途解約，利息會打折</strong>（「實存期間利息不受影響」是錯的）🔁 40-1、44-2</li>
-<li>押匯：對出口商風險最高 ＝ <strong>O/A 記帳</strong>；可持票向任何銀行讓購 ＝ <strong>L/C</strong>（A/P 不行）🔁 43-2、46-1；47-2、41-1</li>
-<li>銀行法「長期信用」＝ <strong>超過 7 年</strong>（48-1）</li>
-<li>商業銀行業務：票據貼現、國內外匯兌、簽發信用狀、國內外保證 <strong>全部都是</strong>（48-2）</li>
-<li>專業銀行<strong>不含</strong>儲蓄銀行（42-2）；工業銀行<strong>不得收受金融機構轉存款</strong>（40-3），對單一生產事業直接投資 ≤ 淨值 <strong>5%</strong>（41-2）</li>
-<li>證券商：<strong>發起設立</strong>（40-2）；承銷商最低實收資本 <strong>4 億</strong>（43-3）；經紀商受託買賣 ＝ <strong>行紀</strong>（45-3）；<strong>自營商不得受託買賣</strong>（44-1）；營業用不動產等不得超過資產總額 <strong>60%</strong>（48-3）</li>
-<li>證券投顧<strong>不得代理客戶投資</strong>（47-1）</li>
-<li>可公開募集債券型基金 ＝ <strong>投信公司</strong>（46-2）；基金主管機關 ＝ <strong>證期局</strong>（47-29）</li>
-<li>信用卡：循環利息從<strong>繳款截止日</strong>起算對持卡人最有利（47-9）；「依民法循環利率最高 20%」是錯的（41-9）</li>
+<li>定存到期前解約 → 利息會<strong>打折／減少</strong>（「實存期間利息不受影響」＝錯）（3屆）</li>
+<li>押匯對出口商風險最高＝<strong>O/A 記帳</strong>；可持票向任何銀行讓購＝<strong>L/C</strong>（A/P 不行）（多屆）</li>
+<li>A/P：只能向<strong>指定通匯銀行</strong>讓購，不能「任何銀行」（3屆）</li>
+<li>銀行法長期信用＝<strong>超過 7 年</strong>；商業銀行業務含貼現、匯兌、信用狀、保證等（近屆）</li>
+<li>專業銀行<strong>不含儲蓄銀行</strong>；工業銀行<strong>不得收受金融機構轉存款</strong>；對單一生產事業／創投直接投資 ≤ 淨值 <strong>5%</strong>（多屆）</li>
+<li>證券商採<strong>發起設立</strong>；承銷商最低實收資本 <strong>4 億</strong>；經紀商受託＝<strong>行紀</strong>；<strong>自營商不得受託買賣</strong>；營業用不動產等 ≤ 資產 <strong>60%</strong></li>
+<li>營業保證金：承銷 <strong>4,000 萬</strong>、自營 <strong>1,000 萬</strong>、經紀 <strong>5,000 萬</strong>（自營不是 2,000 萬）</li>
+<li>投顧<strong>不得代理客戶投資</strong>；可公開募集債券型基金＝<strong>投信</strong>；基金主管＝<strong>證期局</strong></li>
+<li>全權委託資產報告書＝<strong>每月</strong>送達委任人；可經營全權委託＝投信／投顧</li>
+<li>金控優點：客戶共享、平台整合、一次購足；<strong>不是</strong>「分散營運風險」（風險反而傳染）（3屆）</li>
+<li>合併出售不良債權損失可分 <strong>15 年</strong>認列；銀行發金融債向<strong>銀行局</strong>申請</li>
+<li>信用卡循環利息從<strong>繳款截止日</strong>起算對持卡人最有利（「民法最高 20%」說法常是錯的）</li>
+</ul>
+<p><strong>易錯</strong></p>
+<ul>
+<li>問定存何者錯誤 → 錯在「解約利息不受影響」；正確是會減少／打折。</li>
+<li>問 A/P 何者錯誤 → 錯在「可向任何銀行讓購」；那是 L/C。</li>
+<li>問金控優點何者錯誤 → 錯在「營運風險分散」。</li>
+<li>問證券商何者錯誤 → 錯在「自營商得受託買賣」。</li>
+<li>問專業銀行何者非 → <strong>儲蓄銀行</strong>。</li>
+</ul>
+<p><strong>怎麼辨</strong></p>
+<ul>
+<li>
+<p><strong>L/C（可自由讓購）</strong> vs <strong>A/P（僅指定行）</strong> vs <strong>O/A（出口商風險最高）</strong>。</p>
+</li>
+<li>
+<p><strong>經紀（受託／行紀）</strong> vs <strong>自營（自己買賣、不得受託）</strong> vs <strong>承銷（發行端）</strong>。</p>
+</li>
+<li>
+<p><strong>投信（可公開募集基金）</strong> vs <strong>投顧（顧問／可全權委託，但不得「代理投資」那種錯說法）</strong>。</p>
+</li>
+<li>
+<p>定期存款<strong>中途解約，利息會打折</strong>（「實存期間利息不受影響」是錯的）🔁 40-1、44-2</p>
+</li>
+<li>
+<p>押匯：對出口商風險最高 ＝ <strong>O/A 記帳</strong>；可持票向任何銀行讓購 ＝ <strong>L/C</strong>（A/P 不行）🔁 43-2、46-1；47-2、41-1</p>
+</li>
+<li>
+<p>銀行法「長期信用」＝ <strong>超過 7 年</strong>（48-1）</p>
+</li>
+<li>
+<p>商業銀行業務：票據貼現、國內外匯兌、簽發信用狀、國內外保證 <strong>全部都是</strong>（48-2）</p>
+</li>
+<li>
+<p>專業銀行<strong>不含</strong>儲蓄銀行（42-2）；工業銀行<strong>不得收受金融機構轉存款</strong>（40-3），對單一生產事業直接投資 ≤ 淨值 <strong>5%</strong>（41-2）</p>
+</li>
+<li>
+<p>證券商：<strong>發起設立</strong>（40-2）；承銷商最低實收資本 <strong>4 億</strong>（43-3）；經紀商受託買賣 ＝ <strong>行紀</strong>（45-3）；<strong>自營商不得受託買賣</strong>（44-1）；營業用不動產等不得超過資產總額 <strong>60%</strong>（48-3）</p>
+</li>
+<li>
+<p>證券投顧<strong>不得代理客戶投資</strong>（47-1）</p>
+</li>
+<li>
+<p>可公開募集債券型基金 ＝ <strong>投信公司</strong>（46-2）；基金主管機關 ＝ <strong>證期局</strong>（47-29）</p>
+</li>
+<li>
+<p>信用卡：循環利息從<strong>繳款截止日</strong>起算對持卡人最有利（47-9）；「依民法循環利率最高 20%」是錯的（41-9）</p>
+</li>
 </ul>
 <h3 id="工具-2｜經濟指標題號-4–8每屆-5-題">工具 2｜經濟指標（題號 4–8，每屆 5 題）</h3>
+<h4 id="觀念速讀先懂再刷">觀念速讀（先懂再刷）</h4>
+<blockquote>
+<p>一句：本章每屆約 <strong>5</strong> 題；先抓「領先／同時／落後各是誰、M1b／強力貨幣、經常帳、總需求移動方向」。</p>
+</blockquote>
+<p><strong>必記</strong></p>
+<ul>
+<li>領先＝<strong>股價指數</strong>、實質貨幣總計數等；<strong>不含失業率</strong>、經濟成長率（多屆）</li>
+<li>同時＝<strong>工業生產指數</strong>；落後＝<strong>失業率</strong>、製造業存貨；「真實反映過去」＝<strong>落後</strong>（4屆）</li>
+<li>燈號：紅熱絡、黃紅轉向、<strong>綠＝穩定</strong>、黃藍欠佳、藍衰退</li>
+<li>收縮期三階段＝緩滯、衰退、蕭條（<strong>復甦不是</strong>）</li>
+<li>M1b＝通貨＋支票＋活存＋活儲（<strong>不含準貨幣</strong>）；M2＝M1b＋準貨幣</li>
+<li>強力貨幣＝<strong>準備貨幣＝貨幣基數</strong>（不是準貨幣）（多屆）</li>
+<li>定存解約轉活儲 → <strong>M1b 增加</strong>、M2 大致不變（多屆）</li>
+<li>GNP＝GDP＋<strong>國外要素所得收入淨額</strong>；GNP＝NI＋企業間接稅＋折舊</li>
+<li>國際收支＝經常／資本／金融；<strong>商品貿易屬經常帳</strong>（不是金融帳）</li>
+<li>通膨最常用 <strong>CPI</strong>；生產者採購＝<strong>WPI／躉售</strong>；WPI <strong>不含醫療服務</strong></li>
+<li>即期外匯交割＝成交後<strong>第二個營業日</strong>（不是「次日」）（3屆）</li>
+<li>增加支出／減稅 → 總需求<strong>右移</strong>；減少支出／加稅 → <strong>左移</strong></li>
+<li>央行大買美元：外匯存底↑、新台幣供給↑；<strong>不會</strong>造成財政赤字擴大</li>
+<li>對貨幣供給效果最大的工具常考＝<strong>調整存款準備率</strong>；景氣衰退＋寬鬆 → 宜配<strong>公債</strong></li>
+</ul>
+<p><strong>易錯</strong></p>
+<ul>
+<li>領先指標「不包括」→ 常勾到<strong>失業率</strong>（它是落後）。</li>
+<li>「準貨幣＝貨幣基數／強力貨幣」→ 錯；應是<strong>準備貨幣</strong>。</li>
+<li>「商品貿易屬金融帳」→ 錯；屬<strong>經常帳</strong>。</li>
+<li>「即期外匯次日交割」→ 錯；是 <strong>T+2 營業日</strong>。</li>
+<li>「增支減稅使總需求左移」→ 錯；應<strong>右移</strong>。</li>
+</ul>
+<p><strong>怎麼辨</strong></p>
+<ul>
+<li><strong>領先（預期／股價）</strong> vs <strong>同時（工業生產）</strong> vs <strong>落後（失業／存貨）</strong>。</li>
+<li><strong>M1b（交易性）</strong> vs <strong>準貨幣（定存等）</strong> vs <strong>準備貨幣（強力／基數）</strong>。</li>
+<li><strong>經常帳（貿易）</strong> vs <strong>金融帳（投資流動）</strong>。</li>
+</ul>
 <div class="tw"><table>
 <thead>
 <tr>
@@ -384,6 +483,36 @@ li{margin:2px 0}p,li{word-break:break-word}
 </tbody>
 </table></div>
 <h3 id="工具-3｜短期投資及信用工具題號-9–12每屆-4-題">工具 3｜短期投資及信用工具（題號 9–12，每屆 4 題）</h3>
+<h4 id="觀念速讀先懂再刷">觀念速讀（先懂再刷）</h4>
+<blockquote>
+<p>一句：本章每屆約 <strong>4</strong> 題；先抓「商本每萬元單價公式、RP／RS 誰是誰、貨幣市場不含什麼、理財型房貸額度」。</p>
+</blockquote>
+<p><strong>必記</strong></p>
+<ul>
+<li>商本每萬元單價＝<strong>10,000×(1−r×天/365)</strong>；費用＝面額×費率×天/365（多屆計算）</li>
+<li>承銷手續費每筆最低常考 <strong>2,000 元</strong>；貼現發行 → 實際資金成本 <strong>&gt; 票面利率</strong></li>
+<li>票券利息 <strong>10% 分離課稅</strong></li>
+<li>券商約定日後買回＝券商角度 <strong>RP 附買回</strong>；投資人角度＝<strong>RS 附賣回</strong>（多屆）</li>
+<li>RP／RS 到期＝本金×(1＋r×天/365)</li>
+<li>個人投商本／RP／證券化利息<strong>都要課稅</strong>；「法人 RP 利息完全免稅」常是錯</li>
+<li>貨幣市場工具<strong>不含</strong>：可轉債、金融債券、十年期公債</li>
+<li>甲種國庫券<strong>按面額</strong>；乙種才<strong>貼現</strong></li>
+<li>理財型房貸：隨借隨還、利率<strong>較一般房貸高</strong>、可續約；額度＝每期儲蓄÷(停損比率＋每期利率)</li>
+<li>貨幣市場基金：低風險／高安全、獲利來源偏<strong>利息</strong></li>
+</ul>
+<p><strong>易錯</strong></p>
+<ul>
+<li>RP／RS 搞反：記住「券商說買回＝RP；投資人說賣回＝RS」。</li>
+<li>把可轉債／金融債／長天期公債算進貨幣市場 → 錯。</li>
+<li>甲種國庫券當成貼現發行 → 錯（乙種才是）。</li>
+<li>「法人承作 RP 利息完全免稅」→ 多為錯選項。</li>
+</ul>
+<p><strong>怎麼辨</strong></p>
+<ul>
+<li><strong>商本（貼現單價）</strong> vs <strong>RP／RS（附息到期本利）</strong>。</li>
+<li><strong>貨幣市場（短天期、高流動）</strong> vs <strong>資本市場商品（債／可轉／長公債）</strong>。</li>
+<li><strong>一般房貸</strong> vs <strong>理財型房貸（額度高彈性、利率較高）</strong>。</li>
+</ul>
 <p><strong>商業本票</strong>（每屆 1～2 題計算）：</p>
 <ul>
 <li>每萬元單價 ＝ 10,000 ×（1 − 利率 × 天數 ÷ 365）
@@ -421,6 +550,36 @@ li{margin:2px 0}p,li{word-break:break-word}
 <li>小額信貸：機關團體員工多以<strong>員工互保</strong>辦理（45-8）</li>
 </ul>
 <h3 id="工具-4｜債券＋可轉債題號-13–19每屆-7-題">工具 4｜債券＋可轉債（題號 13–19，每屆 7 題）</h3>
+<h4 id="觀念速讀先懂再刷">觀念速讀（先懂再刷）</h4>
+<blockquote>
+<p>一句：本章每屆約 <strong>7</strong> 題（工具最多之一）；先抓「殖利率與折溢價、存續期間方向、零息、可轉債 10 萬÷轉換價」。</p>
+</blockquote>
+<p><strong>必記</strong></p>
+<ul>
+<li>y &gt; 票面 → <strong>折價</strong>；y＝票面 → <strong>平價</strong>；y &lt; 票面 → 溢價；y 走高 → 債價跌＝資本<strong>損失</strong></li>
+<li>零息價＝面額÷(1＋y)^n；零息到期拿<strong>面額</strong>；再投資風險最低＝<strong>零息</strong></li>
+<li>零息存續期間＝<strong>到期年限</strong>；一般債存續期間 <strong>&lt; 到期年限</strong></li>
+<li>票息愈低／y 愈低／到期愈長 → 存續期間<strong>愈長</strong> → 利率敏感度愈高</li>
+<li>ΔP≈面額×D×Δy；只適合估<strong>小幅</strong>變動；利率跌時長 D 賺最多</li>
+<li>投資級＝S&amp;P <strong>BBB- 以上</strong>；無實體＝<strong>登錄公債</strong>（要到<strong>清算銀行</strong>開戶）</li>
+<li>可轉債每張面額 <strong>10 萬</strong>；轉換股數＝10 萬÷轉換價；轉換價值＝股數×股價</li>
+<li>百元報價合理價≈<strong>100×股價÷轉換價</strong>；發行人須上市櫃；重設 ≥ 前次轉換價 <strong>80%</strong></li>
+<li>發行公司<strong>贖回權</strong>會使可轉債價值<strong>下降</strong>；景氣將復甦 → 可轉債報酬常最高</li>
+<li>國內公司債<strong>無匯率風險</strong>；次順位金融債 → <strong>提高</strong>資本適足率</li>
+</ul>
+<p><strong>易錯</strong></p>
+<ul>
+<li>「一般債存續期間 &gt; 到期」→ 錯；只有零息＝到期，一般 <strong>小於</strong>。</li>
+<li>「殖利率上升造成資本利得」→ 錯；是資本損失。</li>
+<li>登錄公債「任何銀行都可開戶」→ 錯；要<strong>清算銀行</strong>。</li>
+<li>可轉債面額當 1 萬或忘了 ÷轉換價 → 計算全錯。</li>
+</ul>
+<p><strong>怎麼辨</strong></p>
+<ul>
+<li><strong>折價／平價／溢價</strong>只用「y 與票面誰大」判斷。</li>
+<li><strong>零息（D＝年期、再投資風險低）</strong> vs <strong>附息債（D＜年期）</strong>。</li>
+<li><strong>債券（利率敏感看 D）</strong> vs <strong>可轉債（還要看股價／轉換價／贖回權）</strong>。</li>
+</ul>
 <p><strong>價格</strong>：</p>
 <ul>
 <li>殖利率 &gt; 票面 → <strong>折價</strong>；殖利率 = 票面 → <strong>平價</strong>；殖利率 &lt; 票面 → 溢價（🔁 41-14、48-17；40-15 平價 ＝ 面額）</li>
@@ -463,6 +622,36 @@ li{margin:2px 0}p,li{word-break:break-word}
 <li>賣回收益率 43-16：兩年後 108% 賣回 → √1.08 − 1（1.08 開根號再減 1） ≈ <strong>4%</strong></li>
 </ul>
 <h3 id="工具-5｜股票題號-20–25每屆-6-題">工具 5｜股票（題號 20–25，每屆 6 題）</h3>
+<h4 id="觀念速讀先懂再刷">觀念速讀（先懂再刷）</h4>
+<blockquote>
+<p>一句：本章每屆約 <strong>6</strong> 題；先抓「Gordon 先乘 (1＋g)、CAPM、β＝系統風險、技術訊號、漲跌幅 10%」。</p>
+</blockquote>
+<p><strong>必記</strong></p>
+<ul>
+<li>Gordon：P＝D₀(1＋g)/(k−g)；題給今年股利或 EPS×發放率 → <strong>先乘 (1＋g)</strong>；明講「下年度」才直接用</li>
+<li>g＝<strong>ROE×保留率</strong>；固定成長必須 <strong>g &lt; k</strong></li>
+<li>本益比＝P／EPS；CAPM＝Rf＋β(Rm−Rf)；β＝<strong>系統／市場風險</strong></li>
+<li>APT＝Rf＋Σ(β×因素溢酬)</li>
+<li>乖離率＝(P−MA)/MA</li>
+<li>賣出訊號：<strong>死亡交叉</strong>、威廉 <strong>&lt; 20</strong>；買進：KD 在低檔且 K&gt;D；D&lt;20 且威廉&gt;80＝<strong>超賣</strong></li>
+<li>技術分析工具含 K 線／均線／RSI／KD／威廉；RSI <strong>不是</strong>財務比率</li>
+<li>漲跌幅 <strong>10%</strong>；盤後定價以<strong>收盤價</strong>；當日無成交 → <strong>暫停交易</strong></li>
+<li>一般類上市實收資本常考 <strong>6 億</strong>以上；現金增資原股東優先 → 防<strong>稀釋</strong></li>
+<li>有內線也賺不到超額＝<strong>強式</strong>效率市場；艾略特第三波漲幅最大</li>
+</ul>
+<p><strong>易錯</strong></p>
+<ul>
+<li>Gordon 忘了乘 (1＋g) → 整題錯。</li>
+<li>把 RSI／威廉當基本分析財務比率 → 錯。</li>
+<li>「由下往上」基本分析時機：整體股市不佳時才適用那類敘述，勿與技術訊號混背。</li>
+<li>CAPM 題目若已給「市場風險溢酬」→ 不要再減 Rf。</li>
+</ul>
+<p><strong>怎麼辨</strong></p>
+<ul>
+<li><strong>基本分析（財報／由下往上）</strong> vs <strong>技術分析（價量指標）</strong>。</li>
+<li><strong>β／CAPM（只要系統風險）</strong> vs <strong>標準差（總風險）</strong>。</li>
+<li><strong>固定股利（g＝0）</strong> vs <strong>固定成長（g&lt;k）</strong>。</li>
+</ul>
 <p><strong>評價公式</strong>：</p>
 <ul>
 <li>Gordon 股利成長模型：股價 ＝ 今年股利 ×（1 ＋ 成長率 g）÷（要求報酬率 k − 成長率 g）
@@ -497,6 +686,36 @@ li{margin:2px 0}p,li{word-break:break-word}
 <li>有內線消息也賺不到超額報酬 ＝ <strong>強式效率市場</strong>（45-22）</li>
 </ul>
 <h3 id="工具-6｜共同基金etf題號-26–30每屆-5-題">工具 6｜共同基金／ETF（題號 26–30，每屆 5 題）</h3>
+<h4 id="觀念速讀先懂再刷">觀念速讀（先懂再刷）</h4>
+<blockquote>
+<p>一句：本章每屆約 <strong>5</strong> 題；先抓「手續費外加、經理／保管費進淨值、封閉供需 vs 開放淨值、ETF 與股票差異」。</p>
+</blockquote>
+<p><strong>必記</strong></p>
+<ul>
+<li><strong>申購手續費外加</strong>；經理費、保管費<strong>已反映在淨值</strong>（極高頻）</li>
+<li>申購費＝申購金額×費率（額外支付）；經理費÷費率＝基金淨資產</li>
+<li>封閉型：市價由<strong>供需</strong>決定（可折溢價）；開放型：按<strong>淨值</strong>買賣（多屆）</li>
+<li>封閉型淨值≈市價÷(1＋溢價)</li>
+<li>平衡型著重資本利得＋固定收益、股債有設限；「<strong>只能 7:3</strong>」是錯</li>
+<li>依投資標的分類<strong>不含區域型</strong>（區域是另一種分法）</li>
+<li>ETF 由<strong>消極／指數型</strong>演化；證交稅<strong>低於股票</strong>；最小變動單位<strong>與股票不同</strong>；有漲跌限制</li>
+<li>定期定額：跌時單位買得多、漲時買得少</li>
+<li>海外基金經銀行<strong>特定金錢信託</strong>；銀行以<strong>受託人</strong>身分開戶</li>
+<li>B 股＝<strong>後收、遞減</strong>；共同基金<strong>不保障收益</strong>；挑基金<strong>不看</strong>保管機構當主條件</li>
+</ul>
+<p><strong>易錯</strong></p>
+<ul>
+<li>把經理費／保管費再「外加」一次 → 錯（已在淨值）。</li>
+<li>封閉／開放搞反：封閉看市價供需；開放看淨值。</li>
+<li>「ETF 最小跳動與股票相同」→ 常為錯。</li>
+<li>定期定額「漲時買得多」→ 錯。</li>
+</ul>
+<p><strong>怎麼辨</strong></p>
+<ul>
+<li><strong>費用：外加（申購）</strong> vs <strong>內含淨值（經理／保管）</strong>。</li>
+<li><strong>封閉（折溢價）</strong> vs <strong>開放（淨值申贖）</strong>。</li>
+<li><strong>股票 ETF</strong> vs <strong>個股</strong>（稅、跳動、追蹤指數）。</li>
+</ul>
 <p><strong>費用</strong>（🔁 最常考）：</p>
 <ul>
 <li><strong>申購手續費外加；經理費、保管費已反映在淨值</strong></li>
@@ -526,6 +745,36 @@ li{margin:2px 0}p,li{word-break:break-word}
 <li>B 股基金 ＝ <strong>後收、遞減</strong>手續費；共同基金<strong>不保障收益</strong>；挑基金<strong>不看</strong>保管機構</li>
 </ul>
 <h3 id="工具-7｜期貨與選擇權題號-31–37每屆-7-題">工具 7｜期貨與選擇權（題號 31–37，每屆 7 題）</h3>
+<h4 id="觀念速讀先懂再刷">觀念速讀（先懂再刷）</h4>
+<blockquote>
+<p>一句：本章每屆約 <strong>7</strong> 題；先抓「Call／Put 損益與兩平、權利金＝內含＋時間、保證金誰繳、大台 200／小台 50」。</p>
+</blockquote>
+<p><strong>必記</strong></p>
+<ul>
+<li>Call 到期損益＝S−K−權利金；兩平＝<strong>K＋權利金</strong>；Put＝K−S−權利金；兩平＝<strong>K−權利金</strong></li>
+<li>權利金＝<strong>內含價值＋時間價值</strong>；內含為負當 <strong>0</strong></li>
+<li>價內：Call 看 S&gt;K；Put 看 S&lt;K</li>
+<li>履約價↑ → Call 價↓、Put 價↑；無風險利率↑ → Call↑、Put↓；波動／到期↑ → 兩者都↑</li>
+<li>看空可<strong>賣 Call</strong>或買 Put；賣股又怕續漲 → 賣股＋<strong>買 Call</strong></li>
+<li>空頭價差 Put：買高 K Put、賣低 K Put</li>
+<li>期貨<strong>買賣雙方</strong>都繳保證金（履約保證）；選擇權<strong>只有賣方</strong>繳（買方付權利金）</li>
+<li>大台指每點 <strong>200</strong>；小台／台指選擇權每點 <strong>50</strong></li>
+<li>期貨理論價＝S×e^(Rf×t)（用<strong>無風險利率</strong>）；反向沖銷＝<strong>平倉</strong></li>
+<li>遠期契約<strong>不在</strong>交易所；黃金期貨<strong>不是</strong>金融期貨；選擇權報酬與標的多呈<strong>非線性</strong></li>
+</ul>
+<p><strong>易錯</strong></p>
+<ul>
+<li>Call／Put 兩平公式對調 → 必錯。</li>
+<li>買進選擇權還去繳「雙方保證金」→ 錯（買方通常只付權利金）。</li>
+<li>期貨理論價誤用「市場利率陷阱選項」→ 題目要 Rf。</li>
+<li>大台／小台點值 200／50 搞反 → 金額差四倍。</li>
+</ul>
+<p><strong>怎麼辨</strong></p>
+<ul>
+<li><strong>期貨（雙向保證金、線性）</strong> vs <strong>選擇權（卖方保證金、非線性權利）</strong>。</li>
+<li><strong>Call（看漲／兩平 K＋C）</strong> vs <strong>Put（看跌／兩平 K−P）</strong>。</li>
+<li><strong>平倉（反向沖銷）</strong> vs <strong>交割／履約</strong>。</li>
+</ul>
 <p><strong>計算公式</strong>：</p>
 <div class="tw"><table>
 <thead>
@@ -624,6 +873,36 @@ li{margin:2px 0}p,li{word-break:break-word}
 <li>遠期契約<strong>不在</strong>交易所交易（40-33）；黃金期貨<strong>不是</strong>金融期貨</li>
 </ul>
 <h3 id="工具-8｜保險題號-38–42每屆-5-題">工具 8｜保險（題號 38–42，每屆 5 題）</h3>
+<h4 id="觀念速讀先懂再刷">觀念速讀（先懂再刷）</h4>
+<blockquote>
+<p>一句：本章每屆約 <strong>5</strong> 題；先抓「傷害險定義、自殺／自殘理賠時點、生存險特色、投資型誰扛風險、產壽險不得兼營」。</p>
+</blockquote>
+<p><strong>必記</strong></p>
+<ul>
+<li>傷害險＝<strong>非由疾病引起之外來突發事故</strong>；酒駕致死<strong>不賠</strong></li>
+<li>壽險滿 2 年後自殺死亡 → 賠身故；自殺未死只致殘 → <strong>不賠殘廢</strong>，等死亡才賠身故</li>
+<li>故意自成殘廢 → <strong>不論多久都不賠</strong></li>
+<li>多位受益人中一人故意致死 → <strong>其他受益人可領全部</strong></li>
+<li>人壽保險分：生存、死亡、生死合險；生存險：期內死亡不給付、<strong>無全殘給付</strong>、也不分定期／終身</li>
+<li>定期 vs 終身差在<strong>保險期間</strong>；定期保費較低、期滿生存無給付</li>
+<li>多倍型養老＝<strong>多個定期＋一個生存</strong>；生死合險＝保障＋儲蓄</li>
+<li>抗通膨常用<strong>變額年金</strong>、增額分紅型；投資型：<strong>專設帳簿</strong>、風險<strong>保戶自負</strong>、資訊要透明；萬能型保費／保額可調</li>
+<li>損害填補型＝住院醫療<strong>實支實付</strong>；責任險＝對<strong>第三人</strong>賠償</li>
+<li>產險與壽險<strong>不得兼營</strong>；保證金按實收資本 <strong>15%</strong>；旅平險最長常考 <strong>180 天</strong>、多半<strong>免體檢</strong></li>
+</ul>
+<p><strong>易錯</strong></p>
+<ul>
+<li>生存保險當成有全殘給付／可分定期終身 → 錯。</li>
+<li>「受益人疏失致殘」列入除外 → 題目常說除外<strong>不含</strong>此項。</li>
+<li>重大疾病含老年癡呆 → 常為錯。</li>
+<li>「非自用不動產上限 20%」之類保險業規定選項 → 常是錯的干擾項。</li>
+</ul>
+<p><strong>怎麼辨</strong></p>
+<ul>
+<li><strong>生存險（活著領、死不領）</strong> vs <strong>死亡險／合險</strong>。</li>
+<li><strong>投資型（保戶自負投資風險）</strong> vs <strong>傳統型（保險公司承擔投資結果）</strong>。</li>
+<li><strong>責任險（第三人）</strong> vs <strong>財產直接損失／人身險</strong>。</li>
+</ul>
 <p><strong>理賠與除外</strong>：</p>
 <ul>
 <li>傷害險 ＝「<strong>非由疾病引起之外來突發事故</strong>」；<strong>酒駕致死不賠</strong>（40-40）</li>
@@ -653,6 +932,37 @@ li{margin:2px 0}p,li{word-break:break-word}
 <p><strong>數字</strong>：雙目失明給付 <strong>100%</strong>；旅平險最長 <strong>180 天</strong>、<strong>不用體檢</strong>、醫療以<strong>實支</strong>給付。
 <strong>保險業規定</strong>（45-2）：產險、壽險<strong>不得兼營</strong>；按實收資本 <strong>15%</strong> 繳存保證金；「非自用不動產上限 20%」是錯的。</p>
 <h3 id="工具-9｜信託題號-43–47每屆-5-題-第一科最划算">工具 9｜信託（題號 43–47，每屆 5 題）⭐ 第一科最划算</h3>
+<h4 id="觀念速讀先懂再刷">觀念速讀（先懂再刷）</h4>
+<blockquote>
+<p>一句：本章每屆約 <strong>5</strong> 題且記憶題多（划算章）；先抓「三人主體、自益／他益、特定金錢信託、集團信託、信託不能規避債務」。</p>
+</blockquote>
+<p><strong>必記</strong></p>
+<ul>
+<li>信託主體＝<strong>委託人、受託人、受益人</strong>（監察人非必要）</li>
+<li>財產移轉給<strong>受託人</strong>；受託人負善良管理人＋忠實義務，為<strong>受益人</strong>利益</li>
+<li>運用方式／期限／契約內容依<strong>委託人</strong>意見</li>
+<li>委託人自己享利益＝<strong>自益信託</strong>；他益課<strong>贈與稅</strong>（不是遺產稅）</li>
+<li>指定用途買基金＝<strong>特定金錢信託</strong>、多屬自益；概括範圍＝指定金錢信託；裁量權：特定 &lt; 指定 &lt; <strong>不指定</strong></li>
+<li>不特定多數＋定型化＝<strong>集團信託</strong>；特定多數＋定型化＝<strong>準集團信託</strong></li>
+<li>集合管理運用帳戶法源＝信託法＋信託業法；保管＝受託人；對象<strong>不是</strong>不特定多數</li>
+<li>依是否以信託為業：營業／民事（<strong>不含</strong>宣言、公益當「是否以信託為業」那組）</li>
+<li>員工持股信託<strong>不屬於民事信託</strong></li>
+<li>信託功能<strong>不是規避債務</strong>；遺囑信託好處<strong>不含節省遺產稅</strong></li>
+<li>保險金信託避他益稅負 → 以<strong>保險受益人</strong>為委託人；信託房屋賣掉契稅＝<strong>買方</strong></li>
+</ul>
+<p><strong>易錯</strong></p>
+<ul>
+<li>「受託人為自己利益管理」→ 錯；為<strong>受益人</strong>。</li>
+<li>他益信託課遺產稅 → 錯；課<strong>贈與稅</strong>。</li>
+<li>信託可用來避債 → 錯。</li>
+<li>員工持股＝民事信託 → 錯。</li>
+</ul>
+<p><strong>怎麼辨</strong></p>
+<ul>
+<li><strong>自益（委託人＝受益人）</strong> vs <strong>他益（課贈與稅）</strong>。</li>
+<li><strong>特定金錢（指定標的／基金）</strong> vs <strong>指定／不指定（裁量由小到大）</strong>。</li>
+<li><strong>集團（不特定多數）</strong> vs <strong>準集團（特定多數）</strong>。</li>
+</ul>
 <p>白話：把財產交給別人（受託人）管理，利益給指定的人（受益人）。</p>
 <div class="tw"><table>
 <thead>
@@ -753,46 +1063,184 @@ li{margin:2px 0}p,li{word-break:break-word}
 </tbody>
 </table></div>
 <h3 id="工具-10｜組合式商品題號-48–50每屆-3-題">工具 10｜組合式商品（題號 48–50，每屆 3 題）</h3>
+<h4 id="觀念速讀先懂再刷">觀念速讀（先懂再刷）</h4>
+<blockquote>
+<p>一句：本章每屆約 <strong>3</strong> 題；先抓「保本＝存款＋買權、高收益＝存款＋賣權、保本需存與參與率、信用連結不保本」。</p>
+</blockquote>
+<p><strong>必記</strong></p>
 <ul>
-<li><strong>保本型 ＝ 存款＋「買」選擇權</strong>；<strong>高收益型 ＝ 存款＋「賣」選擇權</strong>（本金可能被轉換）</li>
-<li><strong>信用連結無法保本</strong>（42-49）；匯率連結「<strong>必為</strong>保本型」是錯的（40-48）；提前贖回<strong>不保證</strong>還本（45-11）</li>
-<li>保本型最少領回 ＝ 本金 × 保本率（41-12：200 萬 × 95% ＝ <strong>190 萬</strong>）</li>
-<li>保本需存金額 ＝ 保本率 ÷ (1＋利率 × 月數/12)。47-12：94 ÷ 1.015 ＝ <strong>92.61 萬</strong></li>
-<li>參與率 ＝ (100% − 保本需存金額) ÷ 選擇權價金
+<li><strong>保本型＝存款＋買選擇權</strong>；<strong>高收益型＝存款＋賣選擇權</strong>（本金可能被轉換）</li>
+<li><strong>信用連結無法保本</strong>；匯率連結「必為保本」是錯；提前贖回<strong>不保證</strong>還本</li>
+<li>最少領回＝本金×保本率；保本需存＝保本率÷(1＋r×月/12)</li>
+<li>參與率＝(1−保本需存)÷選擇權價金（或 100%−需存）</li>
+<li>匯率連結賣 Call：沒超過履約 → 本金＋利息；超過 → 可能被轉換幣別</li>
+<li>以利息＋部分本金買權：沒超過 → 可能只拿回 <strong>95%</strong> 等保本額；最多損失權利金部位</li>
+<li>利率連結常含利率交換＋<strong>利率選擇權</strong>；Collar＝<strong>買 Cap＋賣 Floor</strong>；區間計息≈<strong>數位選擇權</strong></li>
+<li>反浮動適合<strong>利率下降</strong>；連動債信用風險看<strong>發行銀行</strong></li>
+<li>信用事件通常<strong>不含</strong>存款不足退票、股票下市／全額交割</li>
+</ul>
+<p><strong>易錯</strong></p>
+<ul>
+<li>保本／高收益的買權賣權方向反了 → 整章崩。</li>
+<li>「信用連結也可保本」「匯率連結必保本」→ 錯。</li>
+<li>參與率公式分子分母顛倒 → 計算錯。</li>
+<li>信用事件勾到「退票／下市」→ 常不屬信用事件。</li>
+</ul>
+<p><strong>怎麼辨</strong></p>
+<ul>
+<li>
+<p><strong>保本（買權、保本率／參與率）</strong> vs <strong>高收益（賣權、轉換風險）</strong>。</p>
+</li>
+<li>
+<p><strong>市場風險（股／匯／利率）</strong> vs <strong>信用風險（發行人／信用事件）</strong>。</p>
+</li>
+<li>
+<p><strong>Collar（Cap＋Floor）</strong> vs <strong>單一 Cap／Floor</strong>。</p>
+</li>
+<li>
+<p><strong>保本型 ＝ 存款＋「買」選擇權</strong>；<strong>高收益型 ＝ 存款＋「賣」選擇權</strong>（本金可能被轉換）</p>
+</li>
+<li>
+<p><strong>信用連結無法保本</strong>（42-49）；匯率連結「<strong>必為</strong>保本型」是錯的（40-48）；提前贖回<strong>不保證</strong>還本（45-11）</p>
+</li>
+<li>
+<p>保本型最少領回 ＝ 本金 × 保本率（41-12：200 萬 × 95% ＝ <strong>190 萬</strong>）</p>
+</li>
+<li>
+<p>保本需存金額 ＝ 保本率 ÷ (1＋利率 × 月數/12)。47-12：94 ÷ 1.015 ＝ <strong>92.61 萬</strong></p>
+</li>
+<li>
+<p>參與率 ＝ (100% − 保本需存金額) ÷ 選擇權價金</p>
 <ul>
 <li>42-11：90 ÷ 1.005 ＝ 89.55 → 10.45 ÷ 12 ＝ <strong>87%</strong></li>
 <li>48-10：95 ÷ 1.0167 ＝ 93.44 → 6.56 ÷ 9.5 ＝ <strong>69%</strong></li>
 </ul>
 </li>
-<li>匯率連結：
+<li>
+<p>匯率連結：</p>
 <ul>
 <li>「賣」買權、到期沒超過履約價 → <strong>100% 本金＋利息</strong>（40-49）；超過 → 本金被轉換成另一幣別</li>
 <li>以利息＋5% 本金「買」買權、沒超過 → <strong>95% 本金</strong>（🔁 44-49、46-50）；最多只損失權利金（44-50）</li>
 <li>主要風險：本金轉換、流動性、稅負（<strong>三個都是</strong>，41-48）</li>
 </ul>
 </li>
-<li>利率連結 ＝ 利率交換＋<strong>利率選擇權</strong>；Collar ＝ <strong>買 Cap＋賣 Floor</strong>；區間計息 ＝ <strong>數位選擇權</strong></li>
-<li>反浮動利率：適合<strong>利率下降</strong>；每期利息最低為 0；組成<strong>不含</strong>匯率選擇權</li>
-<li>連動債信用風險來自<strong>發行銀行</strong></li>
-<li>信用事件<strong>不含</strong>：存款不足退票、股票下市或全額交割（45-48、41-50）</li>
-<li>股價連結可以連結台灣 50（41-49 說不得連結是錯的）</li>
+<li>
+<p>利率連結 ＝ 利率交換＋<strong>利率選擇權</strong>；Collar ＝ <strong>買 Cap＋賣 Floor</strong>；區間計息 ＝ <strong>數位選擇權</strong></p>
+</li>
+<li>
+<p>反浮動利率：適合<strong>利率下降</strong>；每期利息最低為 0；組成<strong>不含</strong>匯率選擇權</p>
+</li>
+<li>
+<p>連動債信用風險來自<strong>發行銀行</strong></p>
+</li>
+<li>
+<p>信用事件<strong>不含</strong>：存款不足退票、股票下市或全額交割（45-48、41-50）</p>
+</li>
+<li>
+<p>股價連結可以連結台灣 50（41-49 說不得連結是錯的）</p>
+</li>
 </ul>
 <hr />
 <h2 id="第-3-部分-第二科-理財規劃實務">第 3 部分 第二科 理財規劃實務</h2>
 <h3 id="實務-1｜概論職業道德題號-1–3每屆-3-題">實務 1｜概論、職業道德（題號 1–3，每屆 3 題）</h3>
+<h4 id="觀念速讀先懂再刷">觀念速讀（先懂再刷）</h4>
+<blockquote>
+<p>一句：本章每屆約 <strong>3</strong> 題；先抓「六步驟順序、忠實義務、外匯要央行同意、誰不能亂拒絕客戶」。</p>
+</blockquote>
+<p><strong>必記</strong></p>
 <ul>
-<li>流程：<strong>客戶需求面談 → 蒐集資料 → 分析診斷 → 提出建議 → 協助執行 → 定期檢視</strong>（42-3）；首要 ＝ <strong>了解客戶需求</strong></li>
-<li>診斷分析階段做的是：確認財務優劣點、蒐集資料（47-4）</li>
-<li>客戶利益優先、避免利益衝突、禁止短線交易 ＝ <strong>忠實義務原則</strong>（🔁 40-2、42-1、44-1、45-2）</li>
-<li>維持專業知識技能 ＝ <strong>專業知能原則</strong></li>
-<li>財管業務涉外匯 → <strong>中央銀行</strong>同意（🔁 43-2、47-1、48-1）</li>
-<li>「無論金額一律不得拒絕客戶」是錯的（🔁 40-1、47-3）</li>
-<li>違反道德：<strong>期約客戶收益分潤</strong>；不需要：第三者徵信資料；選理專<strong>不看</strong>退佣多寡</li>
-<li>設定目標的關鍵<strong>不含</strong>教育程度；高資產企業主的重點<strong>不是</strong>子女教育金</li>
-<li>股 90%、債 10% → <strong>積極型</strong>客戶</li>
-<li>剩餘財產遠超過遺產稅免稅額 → <strong>不宜</strong>再建議提升儲蓄額（應做遺產規劃）</li>
+<li>流程：<strong>客戶需求面談 → 蒐集資料 → 分析診斷 → 提出建議 → 協助執行 → 定期檢視</strong>；首要＝<strong>了解客戶需求</strong></li>
+<li>診斷階段：確認財務優劣點、整理已蒐集資料</li>
+<li><strong>忠實義務</strong>：客戶利益優先、避免利益衝突、禁止短線交易（多屆）</li>
+<li><strong>專業知能原則</strong>：維持專業知識技能</li>
+<li>財管業務涉外匯 → 須經<strong>中央銀行</strong>同意（多屆）</li>
+<li>「無論金額一律不得拒絕客戶」＝<strong>錯</strong>（可依政策／適法拒絕）</li>
+<li>違反道德常見：<strong>期約客戶收益分潤</strong>；選理專<strong>不看</strong>退佣多寡</li>
+<li>設定目標關鍵<strong>不含教育程度</strong>；高資產企業主重點<strong>不是</strong>子女教育金</li>
+<li>股 90%／債 10% → <strong>積極型</strong>；剩餘財產遠超遺產稅免稅額 → <strong>不宜</strong>再只催儲蓄（應做遺產規劃）</li>
+<li>不需要硬要「第三者徵信資料」才算完整 KYC（題庫常見干擾）</li>
+</ul>
+<p><strong>易錯</strong></p>
+<ul>
+<li>流程第一步不是「先推產品」→ 先<strong>了解需求／面談</strong>。</li>
+<li>「一律不得拒絕任何客戶」→ 錯。</li>
+<li>涉外匯卻只報金管會、忘了<strong>央行</strong> → 錯。</li>
+<li>把退佣高低當選理專標準 → 錯。</li>
+<li>剩餘財產已超免稅額還只叫人提升儲蓄 → 錯（應轉遺產規劃）。</li>
+</ul>
+<p><strong>怎麼辨</strong></p>
+<ul>
+<li>
+<p><strong>忠實義務（利益衝突／短線）</strong> vs <strong>專業知能（持續進修）</strong>。</p>
+</li>
+<li>
+<p><strong>適合性／風險屬性</strong> vs <strong>報酬最大化銷售</strong>。</p>
+</li>
+<li>
+<p><strong>一般理財建議</strong> vs <strong>涉外匯（央行同意）</strong>。</p>
+</li>
+<li>
+<p>流程：<strong>客戶需求面談 → 蒐集資料 → 分析診斷 → 提出建議 → 協助執行 → 定期檢視</strong>（42-3）；首要 ＝ <strong>了解客戶需求</strong></p>
+</li>
+<li>
+<p>診斷分析階段做的是：確認財務優劣點、蒐集資料（47-4）</p>
+</li>
+<li>
+<p>客戶利益優先、避免利益衝突、禁止短線交易 ＝ <strong>忠實義務原則</strong>（🔁 40-2、42-1、44-1、45-2）</p>
+</li>
+<li>
+<p>維持專業知識技能 ＝ <strong>專業知能原則</strong></p>
+</li>
+<li>
+<p>財管業務涉外匯 → <strong>中央銀行</strong>同意（🔁 43-2、47-1、48-1）</p>
+</li>
+<li>
+<p>「無論金額一律不得拒絕客戶」是錯的（🔁 40-1、47-3）</p>
+</li>
+<li>
+<p>違反道德：<strong>期約客戶收益分潤</strong>；不需要：第三者徵信資料；選理專<strong>不看</strong>退佣多寡</p>
+</li>
+<li>
+<p>設定目標的關鍵<strong>不含</strong>教育程度；高資產企業主的重點<strong>不是</strong>子女教育金</p>
+</li>
+<li>
+<p>股 90%、債 10% → <strong>積極型</strong>客戶</p>
+</li>
+<li>
+<p>剩餘財產遠超過遺產稅免稅額 → <strong>不宜</strong>再建議提升儲蓄額（應做遺產規劃）</p>
+</li>
 </ul>
 <h3 id="實務-2｜家庭財務報表＋理財公式題號-4–12每屆-9-題">實務 2｜家庭財務報表＋理財公式（題號 4–12，每屆 9 題）⭐</h3>
+<h4 id="觀念速讀先懂再刷">觀念速讀（先懂再刷）</h4>
+<blockquote>
+<p>一句：本章每屆約 <strong>9</strong> 題；先抓「存量／流量、未實現利得不列收支、房貸本金非支出、自由度／成就率／平衡點」。</p>
+</blockquote>
+<p><strong>必記</strong></p>
+<ul>
+<li>資產負債表＝<strong>存量、時點</strong>；收支儲蓄表＝<strong>流量、期間</strong></li>
+<li><strong>未實現資本利得不列收支儲蓄表</strong>（多屆）</li>
+<li>房貸：本金＝負債減少（<strong>不是支出</strong>）；利息＝支出</li>
+<li>活會已繳＝資產；死會應繳＝負債；<strong>死會利息才是費用</strong></li>
+<li>財務自由度＝淨值×r÷年支出；沒給淨值時可用「年儲蓄×工作年數」當淨值近似</li>
+<li>理財成就率＝淨值÷(年儲蓄×工作年數)</li>
+<li>淨值投資報酬率＝(總投資×r−借款×i)÷自有；淨值成長率＝(工作儲蓄＋理財收入)÷淨值</li>
+<li>收支平衡點＝固定支出÷淨結餘比率；安全邊際率＝(收入−平衡點)÷收入</li>
+<li>上班划算門檻＝增加支出÷(1−邊際稅率)；損益平衡營業額＝固定成本÷毛利率</li>
+<li>小額信貸還信用卡 → 負債總額<strong>不變</strong>；借款購屋／存款還貸 → 常<strong>不影響淨值</strong></li>
+</ul>
+<p><strong>易錯</strong></p>
+<ul>
+<li>資產負債表說成「一段期間」→ 錯（是時點存量）。</li>
+<li>未實現資本利得列入收支表 → 錯。</li>
+<li>房貸本金當支出 → 錯。</li>
+<li>自由度／成就率分子分母對調 → 錯。</li>
+</ul>
+<p><strong>怎麼辨</strong></p>
+<ul>
+<li><strong>存量（資產負債）</strong> vs <strong>流量（收支儲蓄）</strong>。</li>
+<li><strong>自由度（被動蓋支出）</strong> vs <strong>成就率（累積效率）</strong>。</li>
+<li><strong>平衡點</strong> vs <strong>安全邊際</strong>。</li>
+</ul>
 <p><strong>科目分類</strong>：</p>
 <div class="tw"><table>
 <thead>
@@ -944,6 +1392,37 @@ li{margin:2px 0}p,li{word-break:break-word}
 </tbody>
 </table></div>
 <h3 id="實務-3｜理財目標貨幣時間價值報酬率題號-13–21每屆-9-題">實務 3｜理財目標、貨幣時間價值、報酬率（題號 13–21，每屆 9 題）</h3>
+<h4 id="觀念速讀先懂再刷">觀念速讀（先懂再刷）</h4>
+<blockquote>
+<p>一句：本章每屆約 <strong>9</strong> 題；先抓「選哪張表、期初年金 ×(1＋r)、幾何／時間加權、目標並進法」。</p>
+</blockquote>
+<p><strong>必記</strong></p>
+<ul>
+<li>一筆→未來：<strong>複利終值</strong>；未來一筆→現在：<strong>複利現值</strong></li>
+<li>每年固定存→累積：<strong>年金終值</strong>；每年固定領／付→現值：<strong>年金現值</strong>（房貸、退休需求）</li>
+<li>複利終值×複利現值＝<strong>1</strong>；貨幣時間價值本質＝<strong>利息</strong></li>
+<li><strong>期初／年初</strong>年金＝查表值 <strong>×(1＋r)</strong>（超高頻）</li>
+<li>每年應投資＝目標÷年金終值係數</li>
+<li>幾何平均：+100% 再 −50% → <strong>0%</strong>；同期間複利年均常 <strong>&lt;</strong> 單利年均</li>
+<li>定期定額時間加權＝獲利÷<strong>平均投入本金</strong></li>
+<li>比較有無借款績效用<strong>全現金法</strong>；實質報酬≈名目−通膨</li>
+<li>目標彈性越大 → 可承擔風險越<strong>高</strong>；配置關鍵＝<strong>主觀風險偏好</strong></li>
+<li>目標並進法：同時存、<strong>早期負擔重</strong> → 建議延長各目標年限；資金缺口優先<strong>增加收入</strong></li>
+<li>蟋蟀族→強迫儲蓄；年輕風險規避者→<strong>平衡型基金</strong>；短期金額確定→選<strong>可保障成果</strong>工具</li>
+</ul>
+<p><strong>易錯</strong></p>
+<ul>
+<li>期初年金忘了 ×(1＋r) → 必錯。</li>
+<li>房貸／退休需求誤用終值表 → 應用<strong>年金現值</strong>。</li>
+<li>時間加權分母用「最後投入」而非平均投入 → 錯。</li>
+<li>目標並進法以為早期較輕鬆 → 錯（早期負擔重）。</li>
+</ul>
+<p><strong>怎麼辨</strong></p>
+<ul>
+<li><strong>終值（往後累積）</strong> vs <strong>現值（折回來）</strong>。</li>
+<li><strong>普通年金</strong> vs <strong>期初年金（再乘 1＋r）</strong>。</li>
+<li><strong>目標順序法</strong> vs <strong>目標並進法（早期重）</strong>。</li>
+</ul>
 <p><strong>選表口訣</strong>：</p>
 <ul>
 <li>一筆 → 未來：<strong>複利終值</strong>；未來一筆 → 現在：<strong>複利現值</strong>（零息債券）</li>
@@ -979,15 +1458,89 @@ li{margin:2px 0}p,li{word-break:break-word}
 <li>短期目標金額確定 → 選<strong>可保障成果</strong>的工具（40-49）</li>
 </ul>
 <h3 id="實務-4｜子女教育題號-22–24每屆-3-題">實務 4｜子女教育（題號 22–24，每屆 3 題）</h3>
+<h4 id="觀念速讀先懂再刷">觀念速讀（先懂再刷）</h4>
+<blockquote>
+<p>一句：本章每屆約 <strong>3</strong> 題；先抓「用未來學費、不可動用退休金、年提撥＝目標÷FVIFA」。</p>
+</blockquote>
+<p><strong>必記</strong></p>
 <ul>
-<li>用<strong>未來學費</strong>（考慮成長率）；「以現在學費當準備總額」是錯的（🔁 46-23、47-22）</li>
-<li><strong>不可</strong>動用退休基金；人身保險<strong>不是</strong>教育金的攸關因素</li>
-<li>年提撥 ＝ 目標 ÷ 年金終值（46-24：210 ÷ 18.977 ＝ <strong>11.07 萬</strong>）</li>
-<li>已有一筆錢：先扣複利終值再除年金終值（47-23：(200 − 50×2.3966) ÷ 23.276 ＝ <strong>3.44 萬</strong>）</li>
-<li>學費有成長率：先算未來學費。41-24：100 × 1.05¹² ＝ 179.6 → ÷ FVIFA(10%,12) ＝ <strong>8.4 萬</strong></li>
-<li>可養育子女數 ＝（家庭生涯收入 − 夫妻生涯費用 − 購屋）÷ 每個子女生涯支出（48-23 公式寫法錯誤要會辨認）</li>
+<li>準備額要用<strong>未來學費</strong>（含成長）；「以現在學費當總額」＝錯（多屆）</li>
+<li><strong>不可</strong>動用退休基金凑教育金</li>
+<li>人身保險<strong>不是</strong>教育金的攸關因素（題庫常見）</li>
+<li>年提撥＝目標÷<strong>年金終值</strong></li>
+<li>已有一筆：先扣該筆複利終值，再÷年金終值</li>
+<li>有成長率：先算未來學費＝現在×(1＋g)^n，再÷FVIFA</li>
+<li>可養育子女數＝(家庭生涯收入−夫妻生涯費用−購屋)÷每名子女生涯支出</li>
+<li>教育金宜專款；時間長可用定期定額平滑</li>
+</ul>
+<p><strong>易錯</strong></p>
+<ul>
+<li>用現在學費當準備總額 → 錯。</li>
+<li>挪用退休金補教育 → 錯。</li>
+<li>已有一筆卻直接目標÷FVIFA、忘扣終值 → 高估年存。</li>
+<li>把人身保險當教育金關鍵變數 → 錯。</li>
+</ul>
+<p><strong>怎麼辨</strong></p>
+<ul>
+<li>
+<p><strong>現在學費</strong> vs <strong>未來學費（先成長）</strong>。</p>
+</li>
+<li>
+<p><strong>純缺口年存</strong> vs <strong>已有本金（先扣終值）</strong>。</p>
+</li>
+<li>
+<p><strong>教育金</strong> vs <strong>退休金（不可互挖）</strong>。</p>
+</li>
+<li>
+<p>用<strong>未來學費</strong>（考慮成長率）；「以現在學費當準備總額」是錯的（🔁 46-23、47-22）</p>
+</li>
+<li>
+<p><strong>不可</strong>動用退休基金；人身保險<strong>不是</strong>教育金的攸關因素</p>
+</li>
+<li>
+<p>年提撥 ＝ 目標 ÷ 年金終值（46-24：210 ÷ 18.977 ＝ <strong>11.07 萬</strong>）</p>
+</li>
+<li>
+<p>已有一筆錢：先扣複利終值再除年金終值（47-23：(200 − 50×2.3966) ÷ 23.276 ＝ <strong>3.44 萬</strong>）</p>
+</li>
+<li>
+<p>學費有成長率：先算未來學費。41-24：100 × 1.05¹² ＝ 179.6 → ÷ FVIFA(10%,12) ＝ <strong>8.4 萬</strong></p>
+</li>
+<li>
+<p>可養育子女數 ＝（家庭生涯收入 − 夫妻生涯費用 − 購屋）÷ 每個子女生涯支出（48-23 公式寫法錯誤要會辨認）</p>
+</li>
 </ul>
 <h3 id="實務-5｜居住規劃題號-25–31每屆-7-題">實務 5｜居住規劃（題號 25–31，每屆 7 題）⭐</h3>
+<h4 id="觀念速讀先懂再刷">觀念速讀（先懂再刷）</h4>
+<blockquote>
+<p>一句：本章每屆約 <strong>7</strong> 題；先抓「本利平均、改條件三步驟、收益還原、換屋自備款、購屋年成本」。</p>
+</blockquote>
+<p><strong>必記</strong></p>
+<ul>
+<li>台灣多採<strong>本利平均攤還</strong>＋<strong>浮動利率</strong>（不是本金平均為主）</li>
+<li>本利平均：每期固定，<strong>利息遞減、本金遞增</strong></li>
+<li>每年還款＝貸款÷PVIFA；第一期本金＝每期−貸款×利率</li>
+<li>改條件三步驟：①原每期 ②剩餘本金＝原每期×PVIFA(舊r,剩n)（±提前還／增貸）③新每期＝殘本÷PVIFA(新)</li>
+<li>收益還原＝<strong>年淨租金÷收益率</strong>（不是×）</li>
+<li>換屋自備款＝新屋價−新貸款−(舊屋價−舊貸款)</li>
+<li>購屋年成本＝貸款×房貸利率＋自備款×機會成本</li>
+<li>仲介費常考：買方 <strong>1%</strong>、賣方 <strong>4%</strong></li>
+<li>轉貸看利差／費用／額度；轉貸費用<strong>不含</strong>土增稅、契稅；可比 <strong>10 年平均利率</strong></li>
+<li>理財型＝隨借隨還、利率高、<strong>按日</strong>計息；抵利型存款<strong>不計息</strong></li>
+</ul>
+<p><strong>易錯</strong></p>
+<ul>
+<li>「台灣多採本金平均攤還」→ 錯。</li>
+<li>改條件直接拿原貸款除新 PVIFA → 錯（先算殘本）。</li>
+<li>收益還原寫成「租金×收益率」→ 錯（是÷）。</li>
+<li>轉貸費用勾到土增稅／契稅 → 錯。</li>
+</ul>
+<p><strong>怎麼辨</strong></p>
+<ul>
+<li><strong>本利平均（每期固定）</strong> vs <strong>本金平均（每期總額遞減）</strong>。</li>
+<li><strong>租 vs 買（年成本／NPV）</strong> vs <strong>換屋（自備款公式）</strong>。</li>
+<li><strong>一般房貸</strong> vs <strong>理財型／抵利型</strong>。</li>
+</ul>
 <p><strong>房貸</strong>：</p>
 <ul>
 <li>台灣多採<strong>本利平均攤還</strong>、<strong>浮動利率</strong>（44-25 說多採本金平均是錯的）</li>
@@ -1027,6 +1580,36 @@ li{margin:2px 0}p,li{word-break:break-word}
 <li>重購自用住宅退還土增稅：新購土地地價<strong>高於</strong>出售土地稅後地價（42-25）</li>
 </ul>
 <h3 id="實務-6｜退休規劃題號-32–39每屆-8-題">實務 6｜退休規劃（題號 32–39，每屆 8 題）</h3>
+<h4 id="觀念速讀先懂再刷">觀念速讀（先懂再刷）</h4>
+<blockquote>
+<p>一句：本章每屆約 <strong>8</strong> 題；先抓「實質報酬折現、所得替代率、勞退新制 6%／15 年／保證 2 年定存」。</p>
+</blockquote>
+<p><strong>必記</strong></p>
+<ul>
+<li>退休總需求＝首年支出×PVIFA(<strong>報酬−通膨</strong>, 年數)</li>
+<li>首年支出＝現在支出×(1＋通膨)^n</li>
+<li>所得替代率＝退休後支出÷退休前收入</li>
+<li>安全支用率法＝年支出÷安全支用率（注意題目幾人）</li>
+<li>勞退新制：雇主提繳 <strong>≥6%</strong>；勞工自提 <strong>6% 以內</strong></li>
+<li>月退：60 歲、年資 <strong>15 年</strong>（不是 20）；請領前死亡→遺屬領<strong>一次</strong></li>
+<li>請求權時效 <strong>10 年</strong>；保證收益 ≥ 當地銀行 <strong>2 年</strong>定存（不是 1 年）</li>
+<li>資遣費：每滿 1 年 1/2 個月，最多 <strong>6 個月</strong>；DC 投資風險＝<strong>勞工自己</strong></li>
+<li>越保守→假設自己<strong>活得越久</strong>；離退休越久籌措壓力越<strong>小</strong></li>
+<li>勞保最高月投保薪資常考 <strong>45,800</strong>；國民年金給付<strong>不含</strong>失能年金</li>
+</ul>
+<p><strong>易錯</strong></p>
+<ul>
+<li>月退年資勾 20 年 → 錯（<strong>15</strong>）。</li>
+<li>保證收益勾 1 年定存 → 錯（<strong>2 年</strong>）。</li>
+<li>請領前死亡當成可月退 → 錯（遺屬<strong>一次</strong>）。</li>
+<li>折現忘了用（r−通膨）→ 需求金額偏離。</li>
+</ul>
+<p><strong>怎麼辨</strong></p>
+<ul>
+<li><strong>所得替代率</strong> vs <strong>安全支用（本金／年支）</strong>。</li>
+<li><strong>DB（雇主／政府扛）</strong> vs <strong>DC（勞工扛投資風險）</strong>。</li>
+<li><strong>一次領</strong> vs <strong>月退（年資／年齡門檻）</strong>。</li>
+</ul>
 <p><strong>計算</strong>：</p>
 <ul>
 <li>退休總需求（實質報酬率折現法）＝ 首年支出 × PVIFA(報酬 − 通膨, 年數)（45-37：30 萬 × PVIFA(1%,20) ＝ <strong>5,413,800</strong>）</li>
@@ -1098,6 +1681,36 @@ li{margin:2px 0}p,li{word-break:break-word}
 <li>勞保最高月投保薪資 <strong>45,800</strong>；國民年金給付<strong>不含</strong>失能年金</li>
 </ul>
 <h3 id="實務-7｜投資規劃題號-40–46每屆-7-題">實務 7｜投資規劃（題號 40–46，每屆 7 題）</h3>
+<h4 id="觀念速讀先懂再刷">觀念速讀（先懂再刷）</h4>
+<blockquote>
+<p>一句：本章每屆約 <strong>7</strong> 題；先抓「K＝m(V−F) 三步驟、固定比例相反操作、夏普要開根號、只降非系統風險」。</p>
+</blockquote>
+<p><strong>必記</strong></p>
+<ul>
+<li>投資組合保險：<strong>K＝m×(V−F)</strong>（K＝可投股票、m＝乘數、V＝總資產、F＝要保下限）</li>
+<li>步驟：算新 V → 新 K → 與目前股票市值比，<strong>多賣少買</strong></li>
+<li>組合保險＝<strong>追漲殺跌</strong>，優點＝事先停損、保最低資產；盤整易買高賣低</li>
+<li>固定比例＝<strong>漲賣跌買</strong>（與組合保險相反）</li>
+<li>大多頭績效常：<strong>買入持有 &gt; 組合保險 &gt; 固定比例</strong></li>
+<li>向日葵：花心＝<strong>核心長期穩定</strong>；花瓣＝周邊機動</li>
+<li>夏普＝(R−Rf)÷σ；<strong>給變異數先開根號</strong>；夏普高 ≠ 風險低</li>
+<li>兩資產 σ 公式含 2w1w2Cov；分散只能降<strong>非系統風險</strong></li>
+<li>SML：期望 &lt; 必要 → <strong>高估、賣出</strong>；資金行情加重 <strong>β&gt;1</strong></li>
+<li>定期定額：平均成本 <strong>低於</strong>平均價格；選趨勢倍數 <strong>&gt;1</strong></li>
+</ul>
+<p><strong>易錯</strong></p>
+<ul>
+<li>K 寫成 m×V−F 或 F−V → 錯。</li>
+<li>組合保險與固定比例方向搞反 → 錯。</li>
+<li>夏普分母用變異數未開根 → 錯。</li>
+<li>認為多角化可消系統風險 → 錯。</li>
+</ul>
+<p><strong>怎麼辨</strong></p>
+<ul>
+<li><strong>組合保險（追漲殺跌／保 F）</strong> vs <strong>固定比例（漲賣跌買）</strong>。</li>
+<li><strong>核心（花心）</strong> vs <strong>衛星（花瓣）</strong>。</li>
+<li><strong>夏普（÷σ）</strong> vs <strong>β／SML（系統風險定價）</strong>。</li>
+</ul>
 <p><strong>投資組合保險 K ＝ m ×（V − F）</strong>（16 題）：</p>
 <ul>
 <li>K ＝ 股票投資額、m ＝ 風險係數、V ＝ 總資產、F ＝ 可接受的下限</li>
@@ -1130,6 +1743,36 @@ li{margin:2px 0}p,li{word-break:break-word}
 <li>股票報酬率 47-45：(110 − 100 ＋ 5) ÷ 100 ＝ <strong>15%</strong>；1 年後預期價格 41-43：40 × 1.1 − 2 ＝ <strong>42</strong></li>
 </ul>
 <h3 id="實務-8｜稅務＋保險需求題號-47–50每屆-4-題">實務 8｜稅務＋保險需求（題號 47–50，每屆 4 題）</h3>
+<h4 id="觀念速讀先懂再刷">觀念速讀（先懂再刷）</h4>
+<blockquote>
+<p>一句：本章每屆約 <strong>4</strong> 題；先抓「列舉扣除上限、遺贈時效與 2 年內贈與、所得替代／遺族需要保額」。</p>
+</blockquote>
+<p><strong>必記</strong></p>
+<ul>
+<li>所得稅最高稅率 <strong>40%</strong>；列舉保險費每人上限 <strong>2.4 萬</strong>；扶養兄弟姊妹保費<strong>不能扣</strong></li>
+<li><strong>財產交易損失不是列舉扣除</strong>（屬特別扣除）</li>
+<li>自用住宅購屋借款利息上限 <strong>30 萬</strong>（先減儲蓄投資特別扣除）；登記配偶／扶養親屬也可</li>
+<li>最低稅負：基本所得額 <strong>750 萬</strong>以下免申報；<strong>自住房屋不計入</strong></li>
+<li>遺產稅原則<strong>屬人、例外屬地</strong>；死亡後 <strong>6 個月</strong>內申報；應納 ≥<strong>30 萬</strong>可分期</li>
+<li>死亡前 <strong>2 年</strong>內贈與配偶子女等 → <strong>併入遺產</strong>，已繳贈與稅可扣抵；堂兄弟<strong>不是</strong>特定人</li>
+<li>配偶扣除額 <strong>553 萬</strong>；贈與免稅額 <strong>244 萬</strong>；土地以<strong>公告現值</strong></li>
+<li>所得替代法保額＝遺族年支出÷r；利率↓→保額↑</li>
+<li>遺族需要法＝年支出×PVIFA＋負債−已有資產</li>
+<li>淨收入彌補法：個人支出占比越大 → 保險需求越<strong>低</strong></li>
+</ul>
+<p><strong>易錯</strong></p>
+<ul>
+<li>財產交易損失當列舉扣除 → 錯。</li>
+<li>死亡前 2 年贈與漏併遺產 → 錯。</li>
+<li>所得替代法與遺族需要法公式混用 → 錯。</li>
+<li>「邊際稅率高就一律改買短票」→ 錯。</li>
+</ul>
+<p><strong>怎麼辨</strong></p>
+<ul>
+<li><strong>列舉扣除</strong> vs <strong>特別扣除（財產交易損失）</strong>。</li>
+<li><strong>所得替代法（÷r）</strong> vs <strong>遺族需要法（PVIFA＋負債−資產）</strong>。</li>
+<li><strong>屬人原則</strong> vs <strong>例外屬地</strong>（遺產稅）。</li>
+</ul>
 <p><strong>所得稅</strong>：</p>
 <ul>
 <li>最高稅率 <strong>40%</strong>、累進稅制；夫妻合併申報<strong>不限</strong>以夫為納稅義務人；新婚、離婚年度<strong>可分開</strong>申報</li>
